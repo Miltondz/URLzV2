@@ -1,15 +1,10 @@
-// Import the Supabase client
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// Define CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
 }
-
-// Get Supabase credentials from environment variables
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
 Deno.serve(async (req) => {
   // Handle preflight OPTIONS request
@@ -18,50 +13,89 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Create an admin Supabase client that can bypass RLS
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+    // Get Supabase credentials from environment variables
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    // Extract the short code or custom slug from the URL path
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Missing Supabase environment variables')
+      return new Response('Server configuration error', { status: 500 })
+    }
+
+    // Create admin client with service role key (bypasses RLS)
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+    
+    // Extract the short code from the URL path
     const url = new URL(req.url)
-    const code = url.pathname.split('/').pop()
+    const pathParts = url.pathname.split('/')
+    const code = pathParts[pathParts.length - 1]
 
     if (!code) {
-      return new Response(JSON.stringify({ error: 'Short code or slug is missing' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      return new Response('Short code is missing', {
+        headers: corsHeaders,
         status: 400,
       })
     }
 
-    // --- THIS IS THE CORRECTED QUERY ---
-    // Find the URL record by checking BOTH the short_code and custom_slug columns.
+    console.log(`Looking for code: ${code}`)
+
+    // Find the URL record by short_code
     const { data: urlRecord, error } = await supabaseAdmin
       .from('urls')
       .select('id, long_url')
-      .or(`short_code.eq.${code},custom_slug.eq.${code}`) // The key change is here!
+      .eq('short_code', code)
       .single()
 
-    if (error || !urlRecord) {
-      return new Response(JSON.stringify({ error: 'URL not found' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    if (error) {
+      console.error('Database error:', error)
+      return new Response('URL not found', {
+        headers: corsHeaders,
         status: 404,
       })
     }
 
-    // Atomically increment the click counter via RPC
-    await supabaseAdmin.rpc('increment_clicks', { url_id: urlRecord.id })
+    if (!urlRecord) {
+      return new Response('URL not found', {
+        headers: corsHeaders,
+        status: 404,
+      })
+    }
 
-    // Return the 301 redirect response
+    console.log(`Found URL: ${urlRecord.long_url}`)
+
+    // Increment click counter
+    try {
+      const { error: rpcError } = await supabaseAdmin.rpc('increment_clicks', { 
+        url_id: urlRecord.id 
+      })
+      if (rpcError) {
+        console.error('RPC error:', rpcError)
+        // Don't fail the redirect if click tracking fails
+      }
+    } catch (rpcError) {
+      console.error('Click tracking failed:', rpcError)
+      // Continue with redirect even if click tracking fails
+    }
+
+    // Return 301 redirect
     return new Response(null, {
       status: 301,
       headers: {
         'Location': urlRecord.long_url,
+        ...corsHeaders
       },
     })
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500, // Use 500 for unexpected server errors
+    console.error('Redirect function error:', error)
+    return new Response('Internal server error', {
+      headers: corsHeaders,
+      status: 500,
     })
   }
 })
