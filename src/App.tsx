@@ -1,0 +1,57 @@
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext'
+import { ThemeProvider } from './contexts/ThemeContext'
+import { Navigation } from './components/Navigation'
+import { AuthComponent } from './components/Auth'
+import { ProtectedRoute } from './components/ProtectedRoute'
+import { Home } from './pages/Home'
+import { Dashboard } from './pages/Dashboard'
+import { useAuth } from './contexts/AuthContext'
+
+function AppContent() {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  return (
+    <Router>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route 
+            path="/login" 
+            element={user ? <Navigate to="/dashboard" replace /> : <AuthComponent />} 
+          />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+        </Routes>
+      </div>
+    </Router>
+  )
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
+  )
+}
+
+export default App
