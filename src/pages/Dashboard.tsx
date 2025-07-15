@@ -27,25 +27,12 @@ export function Dashboard() {
 
   const fetchStats = async () => {
     try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      const { data, error } = await supabase.functions.invoke('get-dashboard-stats')
       
-      if (sessionError || !session?.access_token) {
-        throw new Error('No valid session')
+      if (error) {
+        throw error
       }
-
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-dashboard-stats`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch stats')
-      }
-
-      const data = await response.json()
+      
       setStats(data)
     } catch (error) {
       console.error('Error fetching dashboard stats:', error)
