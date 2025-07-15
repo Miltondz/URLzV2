@@ -74,19 +74,19 @@ export function Redirect() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-4">
+        <div className="text-center max-w-md mx-auto px-4 sm:px-6">
           <div className="p-4 bg-red-100 dark:bg-red-900 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
             <AlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
             Link Not Found
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">
             {error}
           </p>
           <a
             href="/"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-medium rounded-lg transition-colors"
           >
             Go Home
           </a>
@@ -98,21 +98,21 @@ export function Redirect() {
   if (longUrl) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-4">
+        <div className="text-center max-w-md mx-auto px-4 sm:px-6">
           <div className="p-4 bg-green-100 dark:bg-green-900 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
             <ExternalLink className="h-8 w-8 text-green-600 dark:text-green-400" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
             Redirecting to destination...
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4">
             You will be redirected automatically in a moment.
           </p>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Destination:</p>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2">Destination:</p>
             <a
               href={longUrl}
-              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 break-all"
+              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 break-all text-xs sm:text-sm"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -121,7 +121,7 @@ export function Redirect() {
           </div>
           <a
             href={longUrl}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors space-x-2"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-medium rounded-lg transition-colors space-x-2"
           >
             <span>Continue Now</span>
             <ExternalLink className="h-4 w-4" />

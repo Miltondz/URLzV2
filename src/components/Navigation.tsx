@@ -15,7 +15,7 @@ export function Navigation() {
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
               <LinkIcon className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900 dark:text-white">
+              <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                 urlz.lat
               </span>
             </Link>
@@ -31,8 +31,8 @@ export function Navigation() {
             </button>
 
             {user ? (
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 sm:space-x-4">
+                <div className="hidden sm:flex items-center space-x-2">
                   <User className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-700 dark:text-gray-300">
                     {user.email}
@@ -40,16 +40,16 @@ export function Navigation() {
                 </div>
                 <button
                   onClick={signOut}
-                  className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                  className="flex items-center space-x-1 px-2 sm:px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
+                  <span className="hidden sm:inline">Logout</span>
                 </button>
               </div>
             ) : (
               <Link
                 to="/login"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-medium transition-colors"
               >
                 Login
               </Link>

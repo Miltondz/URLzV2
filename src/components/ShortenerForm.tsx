@@ -99,10 +99,10 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
       <div className="flex items-center space-x-2 mb-6">
         <Link2 className="h-6 w-6 text-blue-600" />
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
           Shorten URL
         </h2>
       </div>
@@ -118,7 +118,7 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
             value={longUrl}
             onChange={(e) => setLongUrl(e.target.value)}
             placeholder="https://example.com/very/long/url"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
             required
           />
         </div>
@@ -145,7 +145,7 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
               onChange={(e) => setCustomSlug(e.target.value)}
               placeholder="my-custom-link"
               disabled={!isPro || subscriptionLoading}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+              className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                 !isPro 
                   ? 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
                   : 'border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
@@ -155,7 +155,7 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
               <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                 <div className="group relative">
                   <Lock className="h-5 w-5 text-gray-400" />
-                  <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block">
+                  <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block z-10">
                     <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
                       Upgrade to Pro to use custom slugs!
                       <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
@@ -175,7 +175,7 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
         <button
           type="submit"
           disabled={isLoading || !longUrl.trim()}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-2 sm:py-3 px-4 text-sm sm:text-base rounded-lg transition-colors flex items-center justify-center space-x-2"
         >
           {isLoading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -189,11 +189,11 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
       </form>
 
       {error && (
-        <div className="bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-3 rounded-md mt-4 flex justify-between items-center">
+        <div className="bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-3 rounded-md mt-4 flex justify-between items-start">
           <span className="text-sm">{error}</span>
           <button 
             onClick={() => setError(null)} 
-            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 transition-colors ml-2 flex-shrink-0"
+            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 transition-colors ml-2 flex-shrink-0 mt-0.5"
             aria-label="Dismiss error"
           >
             <X className="h-4 w-4" />
@@ -202,17 +202,17 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
       )}
 
       {shortUrl && (
-        <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+        <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
           <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
             Your shortened URL:
           </p>
-          <div className="flex items-center space-x-2">
-            <code className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+            <code className="flex-1 text-xs sm:text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-2 sm:px-3 py-2 text-gray-900 dark:text-white break-all">
               {shortUrl}
             </code>
             <button
               onClick={copyToClipboard}
-              className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 transition-colors"
+              className="flex items-center justify-center space-x-1 px-3 py-2 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 transition-colors whitespace-nowrap"
             >
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               <span>{copied ? 'Copied!' : 'Copy'}</span>

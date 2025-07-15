@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { ExternalLink, BarChart3, Calendar, Copy } from 'lucide-react'
+import { ExternalLink, BarChart3, Calendar, Copy, Trash2 } from 'lucide-react'
 
 interface Link {
   id: string
@@ -17,6 +17,7 @@ interface LinkListProps {
 export function LinkList({ refreshTrigger }: LinkListProps) {
   const [links, setLinks] = useState<Link[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const fetchLinks = async () => {
     try {
@@ -47,6 +48,30 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
     }
   }
 
+  const deleteLink = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this link?')) {
+      return
+    }
+
+    setDeletingId(id)
+    try {
+      const { error } = await supabase
+        .from('urls')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+      
+      // Remove the link from the local state
+      setLinks(links.filter(link => link.id !== id))
+    } catch (error) {
+      console.error('Error deleting link:', error)
+      alert('Failed to delete link. Please try again.')
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
@@ -57,7 +82,7 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
         <div className="animate-pulse space-y-4">
           <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
           <div className="space-y-3">
@@ -71,9 +96,9 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
           Your Links
         </h2>
         <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -93,6 +118,7 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
         </div>
       ) : (
         <div className="overflow-hidden">
+          {/* Desktop view */}
           <div className="hidden lg:block">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700">
@@ -108,6 +134,9 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Created
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -158,6 +187,20 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         <span>{formatDate(link.created_at)}</span>
                       </div>
                     </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => deleteLink(link.id)}
+                        disabled={deletingId === link.id}
+                        className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        title="Delete link"
+                      >
+                        {deletingId === link.id ? (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -179,7 +222,7 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         href={link.long_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 truncate"
+                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 truncate text-sm"
                         title={link.long_url}
                       >
                         {link.long_url}
@@ -196,13 +239,13 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         href={`${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${link.short_code}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        className="text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors break-all"
                       >
                         {(import.meta.env.VITE_APP_URL || 'https://urlz.lat').replace(/^https?:\/\//, '')}/{link.short_code}
                       </a>
                       <button
                         onClick={() => copyToClipboard(link.short_code)}
-                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
                         title="Copy to clipboard"
                       >
                         <Copy className="h-4 w-4" />
@@ -230,6 +273,21 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         <span>{formatDate(link.created_at)}</span>
                       </div>
                     </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                    <button
+                      onClick={() => deleteLink(link.id)}
+                      disabled={deletingId === link.id}
+                      className="flex items-center space-x-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+                    >
+                      {deletingId === link.id ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                      <span>{deletingId === link.id ? 'Deleting...' : 'Delete Link'}</span>
+                    </button>
                   </div>
                 </div>
               </div>

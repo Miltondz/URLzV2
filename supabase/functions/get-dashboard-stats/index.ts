@@ -1,12 +1,10 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';  
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
 };
-
-// ... el resto de tu código actual
 
 Deno.serve(async (req) => {
   // This is needed if you're planning to invoke your function from a browser.
