@@ -7,6 +7,7 @@ import { AuthComponent } from './components/Auth'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Home } from './pages/Home'
 import { Dashboard } from './pages/Dashboard'
+import { Redirect } from './pages/Redirect'
 import { useAuth } from './contexts/AuthContext'
 
 function AppContent() {
@@ -38,6 +39,8 @@ function AppContent() {
               </ProtectedRoute>
             } 
           />
+          {/* Catch-all route for short codes */}
+          <Route path="/:shortCode" element={<Redirect />} />
         </Routes>
       </div>
     </Router>
