@@ -4,5 +4,6 @@ dist-ssr
 *.local
 .env
 .env.local
+.env
 .env.production
 .DS_Store
