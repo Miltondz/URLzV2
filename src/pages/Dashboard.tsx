@@ -1,14 +1,62 @@
 import React, { useState } from 'react'
+import { useEffect } from 'react'
+import { supabase } from '../lib/supabase'
 import { ShortenerForm } from '../components/ShortenerForm'
 import { LinkList } from '../components/LinkList'
 import { BarChart3, Link2, TrendingUp } from 'lucide-react'
 
+interface DashboardStats {
+  totalLinks: number
+  totalClicks: number
+  avgClicks: number
+}
+
 export function Dashboard() {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [stats, setStats] = useState<DashboardStats>({
+    totalLinks: 0,
+    totalClicks: 0,
+    avgClicks: 0
+  })
+  const [isLoadingStats, setIsLoadingStats] = useState(true)
 
   const handleSuccess = () => {
     setRefreshTrigger(prev => prev + 1)
+    fetchStats() // Refresh stats when a new URL is created
   }
+
+  const fetchStats = async () => {
+    try {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      
+      if (sessionError || !session?.access_token) {
+        throw new Error('No valid session')
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-dashboard-stats`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch stats')
+      }
+
+      const data = await response.json()
+      setStats(data)
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error)
+    } finally {
+      setIsLoadingStats(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchStats()
+  }, [refreshTrigger])
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -32,7 +80,9 @@ export function Dashboard() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Links</p>
-                <p className="text-2xl font-semibold text-gray-900 dark:text-white">-</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                  {isLoadingStats ? '-' : stats.totalLinks.toLocaleString()}
+                </p>
               </div>
             </div>
           </div>
@@ -44,7 +94,9 @@ export function Dashboard() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Clicks</p>
-                <p className="text-2xl font-semibold text-gray-900 dark:text-white">-</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                  {isLoadingStats ? '-' : stats.totalClicks.toLocaleString()}
+                </p>
               </div>
             </div>
           </div>
@@ -56,7 +108,9 @@ export function Dashboard() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Clicks</p>
-                <p className="text-2xl font-semibold text-gray-900 dark:text-white">-</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                  {isLoadingStats ? '-' : stats.avgClicks.toFixed(1)}
+                </p>
               </div>
             </div>
           </div>

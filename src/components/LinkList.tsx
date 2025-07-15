@@ -40,7 +40,8 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
 
   const copyToClipboard = async (shortCode: string) => {
     try {
-      await navigator.clipboard.writeText(`https://urlz.lat/${shortCode}`)
+      const appUrl = import.meta.env.VITE_APP_URL || 'https://urlz.lat'
+      await navigator.clipboard.writeText(`${appUrl}/${shortCode}`)
     } catch (error) {
       console.error('Failed to copy:', error)
     }
@@ -130,12 +131,12 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
                         <a
-                          href={`https://urlz.lat/${link.short_code}`}
+                          href={`${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${link.short_code}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                         >
-                          urlz.lat/{link.short_code}
+                          {(import.meta.env.VITE_APP_URL || 'https://urlz.lat').replace(/^https?:\/\//, '')}/{link.short_code}
                         </a>
                         <button
                           onClick={() => copyToClipboard(link.short_code)}
@@ -192,12 +193,12 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                     </label>
                     <div className="flex items-center space-x-2 mt-1">
                       <a
-                        href={`https://urlz.lat/${link.short_code}`}
+                        href={`${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${link.short_code}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                       >
-                        urlz.lat/{link.short_code}
+                        {(import.meta.env.VITE_APP_URL || 'https://urlz.lat').replace(/^https?:\/\//, '')}/{link.short_code}
                       </a>
                       <button
                         onClick={() => copyToClipboard(link.short_code)}

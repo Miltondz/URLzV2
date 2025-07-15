@@ -93,9 +93,12 @@ Deno.serve(async (req) => {
       throw error
     }
 
+    // Get the app URL from environment variable with fallback
+    const appUrl = Deno.env.get('VITE_APP_URL') || 'https://urlz.lat'
+
     return new Response(
       JSON.stringify({
-        short_url: `https://urlz.lat/${shortCode}`,
+        short_url: `${appUrl}/${shortCode}`,
         short_code: shortCode,
         long_url
       }),
