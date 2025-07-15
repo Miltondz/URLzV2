@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { Link2, Copy, Check, X } from 'lucide-react'
+import { Link2, Copy, Check, X, Lock, Crown } from 'lucide-react'
 
 interface ShortenerFormProps {
   onSuccess: () => void
@@ -8,10 +9,35 @@ interface ShortenerFormProps {
 
 export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
   const [longUrl, setLongUrl] = useState('')
+  const [customSlug, setCustomSlug] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [shortUrl, setShortUrl] = useState('')
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isPro, setIsPro] = useState(false)
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true)
+
+  // Fetch user's subscription status
+  useEffect(() => {
+    const fetchSubscriptionStatus = async () => {
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('subscription_tier')
+          .single()
+
+        if (!error && profile) {
+          setIsPro(profile.subscription_tier === 'pro' || profile.subscription_tier === 'business')
+        }
+      } catch (error) {
+        console.error('Error fetching subscription status:', error)
+      } finally {
+        setSubscriptionLoading(false)
+      }
+    }
+
+    fetchSubscriptionStatus()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,7 +63,10 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.access_token}`
         },
-        body: JSON.stringify({ long_url: longUrl })
+        body: JSON.stringify({ 
+          long_url: longUrl,
+          custom_slug: customSlug.trim() || undefined
+        })
       })
 
       if (!response.ok) {
@@ -48,6 +77,7 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
       const data = await response.json()
       setShortUrl(data.short_url)
       setLongUrl('')
+      setCustomSlug('')
       setError(null)
       onSuccess()
     } catch (error) {
@@ -91,6 +121,55 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
             required
           />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="customSlug" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Custom Slug (Optional)
+            </label>
+            {!isPro && (
+              <div className="flex items-center space-x-1">
+                <Crown className="h-4 w-4 text-yellow-500" />
+                <span className="text-xs font-medium text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 px-2 py-1 rounded">
+                  PRO
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="relative">
+            <input
+              type="text"
+              id="customSlug"
+              value={customSlug}
+              onChange={(e) => setCustomSlug(e.target.value)}
+              placeholder="my-custom-link"
+              disabled={!isPro || subscriptionLoading}
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                !isPro 
+                  ? 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
+                  : 'border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+              }`}
+            />
+            {!isPro && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                <div className="group relative">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                  <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block">
+                    <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                      Upgrade to Pro to use custom slugs!
+                      <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          {!isPro && (
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Create memorable, branded links with a Pro subscription
+            </p>
+          )}
         </div>
 
         <button

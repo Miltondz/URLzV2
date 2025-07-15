@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       throw new Error('Unauthorized')
     }
 
-    const { long_url } = await req.json()
+    const { long_url, custom_slug } = await req.json()
     
     if (!long_url) {
       throw new Error('long_url is required')
@@ -44,37 +44,84 @@ Deno.serve(async (req) => {
       throw new Error('Invalid URL format')
     }
 
-    // Generate short code (6-8 characters)
-    const generateShortCode = () => {
-      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-      let result = ''
-      const length = Math.floor(Math.random() * 3) + 6 // 6-8 characters
-      for (let i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length))
+    // Check if custom slug is requested and validate user subscription
+    if (custom_slug) {
+      // Get user's subscription tier
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('subscription_tier')
+        .eq('id', user.id)
+        .single()
+
+      if (profileError || !profile) {
+        throw new Error('Unable to verify subscription status')
       }
-      return result
-    }
 
-    let shortCode = generateShortCode()
-    let attempts = 0
-    const maxAttempts = 10
+      // Check if user has pro access
+      if (profile.subscription_tier === 'free') {
+        return new Response(
+          JSON.stringify({ error: 'Custom slugs are a Pro feature. Please upgrade your plan.' }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 402
+          }
+        )
+      }
 
-    // Ensure short code is unique
-    while (attempts < maxAttempts) {
+      // Validate custom slug format (alphanumeric, hyphens, underscores only)
+      if (!/^[a-zA-Z0-9_-]+$/.test(custom_slug)) {
+        throw new Error('Custom slug can only contain letters, numbers, hyphens, and underscores')
+      }
+
+      // Check if custom slug is already taken
       const { data: existing } = await supabase
         .from('urls')
         .select('id')
-        .eq('short_code', shortCode)
+        .eq('short_code', custom_slug)
         .single()
 
-      if (!existing) break
-      
-      shortCode = generateShortCode()
-      attempts++
+      if (existing) {
+        throw new Error('This custom slug is already taken')
+      }
     }
+    let shortCode: string
 
-    if (attempts >= maxAttempts) {
-      throw new Error('Failed to generate unique short code')
+    if (custom_slug) {
+      // Use the custom slug
+      shortCode = custom_slug
+    } else {
+      // Generate short code (6-8 characters)
+      const generateShortCode = () => {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        let result = ''
+        const length = Math.floor(Math.random() * 3) + 6 // 6-8 characters
+        for (let i = 0; i < length; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length))
+        }
+        return result
+      }
+
+      shortCode = generateShortCode()
+      let attempts = 0
+      const maxAttempts = 10
+
+      // Ensure short code is unique
+      while (attempts < maxAttempts) {
+        const { data: existing } = await supabase
+          .from('urls')
+          .select('id')
+          .eq('short_code', shortCode)
+          .single()
+
+        if (!existing) break
+        
+        shortCode = generateShortCode()
+        attempts++
+      }
+
+      if (attempts >= maxAttempts) {
+        throw new Error('Failed to generate unique short code')
+      }
     }
 
     // Insert the URL
