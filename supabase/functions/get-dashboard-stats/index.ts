@@ -1,67 +1,46 @@
-import { createClient } from 'npm:@supabase/supabase-js@2'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-}
-
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { corsHeaders } from '../_shared/cors.ts';
 
 Deno.serve(async (req) => {
+  // This is needed if you're planning to invoke your function from a browser.
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
-    
-    // Get the authorization header
-    const authHeader = req.headers.get('authorization')
-    if (!authHeader) {
-      throw new Error('No authorization header')
+    // Create a Supabase client with the Auth context of the user that called the function.
+    // This way your row-level-security (RLS) policies are applied.
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
+    );
+
+    // Now we can get the session or user object
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'User not found' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
     }
 
-    // Verify the JWT token
-    const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
-    if (authError || !user) {
-      throw new Error('Unauthorized')
-    }
-
-    // Call the RPC function to get user statistics
-    const { data, error } = await supabase.rpc('get_user_stats', { 
-      p_user_id: user.id 
-    })
+    // Call the database function 'get_user_stats'
+    const { data, error } = await supabaseClient.rpc('get_user_stats', { p_user_id: user.id });
 
     if (error) {
-      throw error
+      throw error;
     }
 
-    // Extract the first row (should only be one row)
-    const stats = data[0] || { total_links: 0, total_clicks: 0, avg_clicks: 0 }
-
-    return new Response(
-      JSON.stringify({
-        totalLinks: parseInt(stats.total_links),
-        totalClicks: parseInt(stats.total_clicks),
-        avgClicks: parseFloat(stats.avg_clicks)
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      }
-    )
-
+    // The RPC function returns an array with one object, so we return the first element.
+    return new Response(JSON.stringify(data[0]), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    });
   } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      }
-    )
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 400,
+    });
   }
-})
+});
