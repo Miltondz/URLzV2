@@ -39,14 +39,14 @@ export function MostActiveLinks({ links }: MostActiveLinksProps) {
           </p>
         </div>
       ) : (
-        <div className="flex space-x-4 overflow-x-auto pb-2">
+        <div className="flex flex-col sm:flex-row sm:space-x-4 sm:overflow-x-auto space-y-4 sm:space-y-0 pb-2">
           {links.map((link, index) => {
             const code = link.custom_slug || link.short_code
             const shortUrl = `urlz.lat/r/${code}`
             const fullShortUrl = `${window.location.origin}/r/${code}`
             
             return (
-              <div key={link.id} className="flex-shrink-0 w-64 bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+              <div key={link.id} className="flex-shrink-0 w-full sm:w-64 bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                 {/* Ranking Badge */}
                 <div className="flex items-center justify-between mb-3">
                   <span className="inline-flex items-center justify-center w-6 h-6 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-full">

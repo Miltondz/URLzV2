@@ -152,35 +152,35 @@ export function Dashboard() {
             ))}
           </div>
 
-          {/* Loading Top Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 mb-6 sm:mb-8">
-            <div className="lg:col-span-2">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
-                <div className="animate-pulse">
-                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-6"></div>
-                  <div className="space-y-4">
-                    <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                    <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                    <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-3">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
-                <div className="animate-pulse">
-                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-6"></div>
-                  <div className="flex space-x-4 overflow-x-auto">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="flex-shrink-0 w-64 h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                    ))}
-                  </div>
+          {/* Loading Form */}
+          <div className="mb-6 sm:mb-8">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
+              <div className="animate-pulse">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-6"></div>
+                <div className="space-y-4">
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Loading Bottom Section */}
+          {/* Loading Most Active Links */}
+          <div className="mb-6 sm:mb-8">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
+              <div className="animate-pulse">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-6"></div>
+                <div className="flex space-x-4 overflow-x-auto">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="flex-shrink-0 w-64 h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Loading Link List */}
           <div>
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
               <div className="animate-pulse">
@@ -211,12 +211,13 @@ export function Dashboard() {
           </p>
         </div>
 
-        {/* Stats Cards */}
+        {/* 1. Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
+          {/* Total Links Card - Blue */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 border-t-4 border-t-blue-500">
             <div className="flex items-center">
               <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                <Link2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <Link2 className="h-6 w-6 text-blue-500" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Links</p>
@@ -227,10 +228,11 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
+          {/* Total Clicks Card - Green */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 border-t-4 border-t-green-500">
             <div className="flex items-center">
               <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                <BarChart3 className="h-6 w-6 text-green-600 dark:text-green-400" />
+                <BarChart3 className="h-6 w-6 text-green-500" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Clicks</p>
@@ -241,10 +243,11 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 sm:col-span-2 lg:col-span-1">
+          {/* Avg Clicks Card - Indigo */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 border-t-4 border-t-indigo-500 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-indigo-500" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Clicks</p>
@@ -256,20 +259,17 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Top Section - Two Column Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 mb-6 sm:mb-8">
-          {/* Left Column - Shortener Form (40% width) */}
-          <div className="lg:col-span-2">
-            <ShortenerForm onSuccess={refetchData} refetchStats={refetchData} />
-          </div>
-          
-          {/* Right Column - Most Active Links (60% width) */}
-          <div className="lg:col-span-3">
-            <MostActiveLinks links={topLinks} />
-          </div>
+        {/* 2. Shortener Form - Full Width */}
+        <div className="mb-6 sm:mb-8">
+          <ShortenerForm onSuccess={refetchData} refetchStats={refetchData} />
         </div>
 
-        {/* Bottom Section - Full Width Link List */}
+        {/* 3. Most Active Links - Full Width */}
+        <div className="mb-6 sm:mb-8">
+          <MostActiveLinks links={topLinks} />
+        </div>
+
+        {/* 4. Link List - Full Width */}
         <div>
           <LinkList links={allLinks} refetchStats={refetchData} />
         </div>
