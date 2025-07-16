@@ -64,7 +64,7 @@ export function AnalyticsDetailPage() {
           .from('clicks_log')
           .select('*')
           .eq('url_id', linkId)
-          .order('clicked_at', { ascending: false })
+          .order('created_at', { ascending: false })
 
         if (clicksError) throw clicksError
         setClicksData(clicksInfo || [])
