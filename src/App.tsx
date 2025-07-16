@@ -3,9 +3,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { Navigation } from './components/Navigation'
+import { Footer } from './components/Footer'
 import { AuthComponent } from './components/Auth'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Home } from './pages/Home'
+import { About } from './pages/About'
+import { Features } from './pages/Features'
+import { Contact } from './pages/Contact'
 import { Dashboard } from './pages/Dashboard'
 import { ProfilePage } from './pages/ProfilePage'
 import { AnalyticsDetailPage } from './pages/AnalyticsDetailPage'
@@ -29,6 +33,9 @@ function AppContent() {
         <Navigation />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/contact" element={<Contact />} />
           <Route 
             path="/login" 
             element={user ? <Navigate to="/dashboard" replace /> : <AuthComponent />} 
@@ -60,6 +67,7 @@ function AppContent() {
           {/* Catch-all route for short codes */}
           <Route path="/:shortCode" element={<Redirect />} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   )
