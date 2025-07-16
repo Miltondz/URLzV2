@@ -250,9 +250,12 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           </div>
                         </td>
                         <td className="px-4 py-4">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                          <Link
+                            to={`/dashboard/analytics/${link.id}`}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors cursor-pointer"
+                          >
                             {link.clicks}
-                          </span>
+                          </Link>
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
                           <div className="flex items-center space-x-1">
@@ -356,9 +359,12 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           Clicks
                         </label>
                         <div className="mt-1">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                          <Link
+                            to={`/dashboard/analytics/${link.id}`}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors cursor-pointer"
+                          >
                             {link.clicks}
-                          </span>
+                          </Link>
                         </div>
                       </div>
                       <div className="text-right">

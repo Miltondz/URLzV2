@@ -66,14 +66,6 @@ function AppContent() {
               </ProtectedRoute>
             } 
           />
-          <Route 
-            path="/dashboard/analytics/:linkId" 
-            element={
-              <ProtectedRoute>
-                <AnalyticsDetailPage />
-              </ProtectedRoute>
-            } 
-          />
           {/* Catch-all route for short codes */}
           <Route path="/:shortCode" element={<Redirect />} />
         </Routes>
