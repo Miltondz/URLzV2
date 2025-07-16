@@ -10,28 +10,33 @@ export function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 relative overflow-hidden">
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-20 pb-12 sm:pb-16 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Text content */}
-          <div className="text-center lg:text-left">
+      <div className="relative min-h-screen flex items-center justify-center">
+        {/* Full-width Globe Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <GlobeDemo />
+        </div>
+        
+        {/* Text content on top of globe */}
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-2xl p-8 sm:p-12 shadow-2xl">
             <div className="flex justify-center lg:justify-start mb-8">
               <div className="p-4 bg-blue-100 dark:bg-blue-900 rounded-full">
                 <Link2 className="h-16 w-16 text-blue-600 dark:text-blue-400" />
               </div>
             </div>
           
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 px-4 lg:px-0">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6">
               Smarter Link Management
               <br />
               <span className="text-blue-600">Starts Here</span>
             </h1>
           
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto lg:mx-0 px-4 lg:px-0">
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
               Create short, branded links that boost your brand and improve performance effortlessly.
               Track clicks and get the insights you need to grow.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start px-4 lg:px-0">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {user ? (
                 <Link
                   to="/dashboard"
@@ -59,20 +64,6 @@ export function Home() {
               )}
             </div>
           </div>
-
-          {/* Right side - Globe component */}
-          <div className="flex justify-center lg:justify-end relative">
-            <div className="w-full max-w-lg h-96 relative z-20">
-              <GlobeDemo />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Background Globe - Positioned behind content */}
-      <div className="absolute top-0 right-0 w-full h-full opacity-30 dark:opacity-20 pointer-events-none">
-        <div className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/4 scale-150">
-          <GlobeDemo />
         </div>
       </div>
 
