@@ -26,6 +26,7 @@ export function AuthComponent() {
         <div className="bg-white dark:bg-gray-800 py-6 sm:py-8 px-4 sm:px-6 lg:px-10 shadow-xl rounded-lg">
           <Auth
             supabaseClient={supabase}
+            view="sign_in"
             appearance={{
               theme: ThemeSupa,
               variables: {
