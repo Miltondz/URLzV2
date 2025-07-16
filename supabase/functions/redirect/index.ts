@@ -1,10 +1,9 @@
-// Copia este código completo en el editor de la función "redirect" en Supabase
+// --- CÓDIGO FINAL Y VERIFICADO PARA LA FUNCIÓN "redirect" ---
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
 };
-// Create the admin client once, outside the handler, for performance.
 const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '', {
   auth: {
     autoRefreshToken: false,
@@ -25,19 +24,17 @@ Deno.serve(async (req)=>{
         status: 400
       });
     }
-    // Find the URL by checking BOTH short_code and custom_slug columns.
+    // Busca el código en AMBAS columnas: short_code O custom_slug
     const { data: urlRecord, error } = await supabaseAdmin.from('urls').select('id, long_url').or(`short_code.eq.${code},custom_slug.eq.${code}`).single();
     if (error) {
       console.error(`Database error for code [${code}]:`, error);
-      return new Response('URL not found', {
+      return new Response('URL not not not  found', {
         status: 404
       });
     }
-    // Increment clicks but don't fail the redirect if it errors.
     await supabaseAdmin.rpc('increment_clicks', {
       url_id: urlRecord.id
     }).catch(console.error);
-    // Perform the 301 Permanent Redirect.
     return new Response(null, {
       status: 301,
       headers: {
