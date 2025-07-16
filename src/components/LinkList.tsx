@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { ExternalLink, BarChart3, Calendar, Copy, Trash2 } from 'lucide-react'
 import { ConfirmDialog } from './ConfirmDialog'
