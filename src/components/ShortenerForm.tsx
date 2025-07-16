@@ -45,8 +45,9 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
 
     setIsLoading(true)
     setError(null)
+    setShortUrl('') // Clear previous result
+    
     try {
-      // Call the shorten-url Edge Function using supabase.functions.invoke
       const { data, error } = await supabase.functions.invoke('shorten-url', {
         body: {
           long_url: longUrl,
@@ -64,7 +65,7 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
       onSuccess()
     } catch (error) {
       console.error('Error shortening URL:', error)
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.')
+      setError(error?.message || 'An unexpected error occurred. Please try again.')
     } finally {
       setIsLoading(false)
     }
