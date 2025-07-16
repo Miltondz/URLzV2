@@ -1,30 +1,17 @@
-# --- Configuración Definitiva de Redirección para Netlify ---
-
-# Regla 1: Redirección de Enlaces Cortos (LA MÁS IMPORTANTE, DEBE IR PRIMERO)
-# Esta regla intercepta cualquier petición que parezca un enlace corto.
 [[redirects]]
-  # 'from' captura cualquier ruta que NO sea un archivo o directorio existente.
-  # Es una forma más simple y robusta que las condiciones complejas.
-  from = "/*"
-  
-  # 'to' redirige a tu función de Supabase, pasando el código corto.
-  to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:splat"
-  
-  # 'status = 302' es una redirección temporal. Le dice al navegador "ve a esta otra dirección".
-  status = 302
-  
-  # 'force = true' obliga a que esta redirección se ejecute.
-  force = true
-  
-  # Condición clave: Solo aplica esta regla si la ruta NO es una de las páginas de tu app.
-  # Si la ruta es /dashboard, /pricing, etc., esta regla se ignorará.
-  conditions = {Path = ["^/(?!dashboard|login|signup|pricing|assets/).*$"]}
+from = "/*"
+to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:splat"
+status = 302
+force = true
 
+[redirects.conditions]
+Path = [ "^/(?!dashboard|login|signup|pricing|assets/).*$" ]
 
-# Regla 2: Regla "Catch-All" para la Aplicación de Página Única (SPA)
-# Esta regla solo se ejecuta si la Regla 1 no se aplicó.
-# Maneja los refrescos de página en las rutas de tu app (ej: F5 en /dashboard).
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+from = "/*"
+to = "/index.html"
+status = 200
+
+[build]
+command = "npm run build"
+publish = "dist"
