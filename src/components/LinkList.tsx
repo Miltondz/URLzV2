@@ -6,7 +6,8 @@ import { ConfirmDialog } from './ConfirmDialog'
 interface Link {
   id: string
   long_url: string
-  short_code: string
+  short_code: string | null
+  custom_slug: string | null
   clicks: number
   created_at: string
 }
@@ -18,6 +19,7 @@ interface LinkListProps {
 export function LinkList({ refreshTrigger }: LinkListProps) {
   const [links, setLinks] = useState<Link[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean
@@ -30,16 +32,18 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
   })
 
   const fetchLinks = async () => {
+    setError(null)
     try {
       const { data, error } = await supabase
         .from('urls')
-        .select('*')
+        .select('id, long_url, short_code, custom_slug, clicks, created_at')
         .order('created_at', { ascending: false })
 
       if (error) throw error
       setLinks(data || [])
     } catch (error) {
       console.error('Error fetching links:', error)
+      setError(error instanceof Error ? error.message : 'Failed to load links')
     } finally {
       setIsLoading(false)
     }
@@ -131,6 +135,20 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
           </span>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-4 rounded-lg">
+            <p className="font-medium">Error loading links</p>
+            <p className="text-sm mt-1">{error}</p>
+            <button 
+              onClick={fetchLinks}
+              className="mt-2 text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         {links.length === 0 ? (
           <div className="text-center py-12">
             <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -169,6 +187,13 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                   <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {links.map((link) => (
                       <tr key={link.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        {(() => {
+                          const code = link.custom_slug || link.short_code
+                          const fullShortUrl = `${window.location.origin}/r/${code}`
+                          const displayText = fullShortUrl.replace('https://', '')
+                          
+                          return (
+                            <>
                         <td className="px-4 py-4">
                           <div className="flex items-center space-x-2">
                             <ExternalLink className="h-4 w-4 text-gray-400 flex-shrink-0" />
@@ -186,15 +211,15 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         <td className="px-4 py-4">
                           <div className="flex items-center space-x-2">
                             <a
-                              href={link.short_url}
+                              href={fullShortUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                             >
-                              {link.short_url.replace('https://', '')}
+                              {displayText}
                             </a>
                             <button
-                              onClick={() => copyToClipboard(link.short_url)}
+                              onClick={() => copyToClipboard(fullShortUrl)}
                               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                               title="Copy to clipboard"
                             >
@@ -227,6 +252,9 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                             )}
                           </button>
                         </td>
+                            </>
+                          )
+                        })()}
                       </tr>
                     ))}
                   </tbody>
@@ -238,6 +266,12 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
             <div className="lg:hidden space-y-4">
               {links.map((link) => (
                 <div key={link.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                  {(() => {
+                    const code = link.custom_slug || link.short_code
+                    const fullShortUrl = `${window.location.origin}/r/${code}`
+                    const displayText = fullShortUrl.replace('https://', '')
+                    
+                    return (
                   <div className="space-y-3">
                     <div>
                       <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -263,15 +297,15 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                       </label>
                       <div className="flex items-center space-x-2 mt-1">
                         <a
-                          href={link.short_url}
+                          href={fullShortUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors break-all"
                         >
-                          {link.short_url.replace('https://', '')}
+                          {displayText}
                         </a>
                         <button
-                          onClick={() => copyToClipboard(link.short_url)}
+                          onClick={() => copyToClipboard(fullShortUrl)}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
                           title="Copy to clipboard"
                         >
@@ -317,6 +351,8 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                       </button>
                     </div>
                   </div>
+                    )
+                  })()}
                 </div>
               ))}
             </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { ShortenerForm } from '../components/ShortenerForm'
 import { LinkList } from '../components/LinkList'
 import { BarChart3, Link2, TrendingUp } from 'lucide-react'
@@ -12,9 +13,11 @@ interface DashboardStats {
 }
 
 export function Dashboard() {
+  const { user, loading: authLoading } = useAuth()
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSuccess = () => {
     setRefreshTrigger(prev => prev + 1)
@@ -23,16 +26,19 @@ export function Dashboard() {
 
   const fetchStats = async () => {
     setLoading(true)
+    setError(null)
     try {
       const { data, error } = await supabase.functions.invoke('get-dashboard-stats')
       
       if (error) {
-        throw error
+        console.error('Stats function error:', error)
+        throw new Error(error.message || 'Failed to fetch stats')
       }
       
       setStats(data)
     } catch (error) {
       console.error('Error fetching dashboard stats:', error)
+      setError(error instanceof Error ? error.message : 'Failed to load dashboard stats')
       // Set fallback stats on error
       setStats({
         totalLinks: 0,
@@ -48,7 +54,31 @@ export function Dashboard() {
     fetchStats()
   }, [refreshTrigger])
 
-  // Loading state - return loading indicator
+  // Show loading if auth is still loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error if user is not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 dark:text-red-400 mb-4">Authentication required</p>
+          <a href="/login" className="text-blue-600 hover:text-blue-800">Go to Login</a>
+        </div>
+      </div>
+    )
+  }
+
+  // Stats loading state - return loading indicator
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -62,6 +92,23 @@ export function Dashboard() {
               Create and manage your shortened URLs
             </p>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-4 rounded-lg">
+              <p className="font-medium">Error loading dashboard</p>
+              <p className="text-sm mt-1">{error}</p>
+              <button 
+                onClick={() => {
+                  setError(null)
+                  fetchStats()
+                }}
+                className="mt-2 text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          )}
 
           {/* Loading Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
