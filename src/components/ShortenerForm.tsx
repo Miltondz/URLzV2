@@ -177,7 +177,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                   } catch (error) {
                     console.error('Failed to paste:', error)
                   }
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                }}
                 className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 title="Paste from clipboard"
               >
