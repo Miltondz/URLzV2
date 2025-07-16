@@ -1,9 +1,13 @@
-[[redirects]]
-from = "/:short_code"
-to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
-status = 301
-force = true
+# --- Configuración de Redirección Final para Netlify ---
 
-[build]
-command = "npm run build"
-publish = "dist"
+[[redirects]]
+  from = "/:short_code"
+  to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
+  status = 301
+  force = true
+
+  # --- LA SECCIÓN MÁGICA ---
+  # Aquí le decimos a Netlify que añada una cabecera "Authorization"
+  # a la petición que reenvía a Supabase.
+  [redirects.headers]
+    Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmaXZhbndrdnRqb3lrcGNqY3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI0NTg5ODIsImV4cCI6MjA2ODAzNDk4Mn0.yvlNL-vV-cyABTkc2RZVNFmduHcKtg3GZsJ9le7jpcQ"
