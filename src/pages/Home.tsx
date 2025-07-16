@@ -8,7 +8,7 @@ export function Home() {
   const { user } = useAuth()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Hero Section */}
       <div className="relative min-h-screen flex items-center justify-center">
         {/* Full-width Globe Background */}
@@ -18,7 +18,7 @@ export function Home() {
         
         {/* Text content on top of globe */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-2xl p-8 sm:p-12 shadow-2xl">
+          <div>
             <div className="flex justify-center lg:justify-start mb-8">
               <div className="p-4 bg-blue-100 dark:bg-blue-900 rounded-full">
                 <Link2 className="h-16 w-16 text-blue-600 dark:text-blue-400" />
@@ -31,7 +31,7 @@ export function Home() {
               <span className="text-blue-600">Starts Here</span>
             </h1>
           
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-200 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Create short, branded links that boost your brand and improve performance effortlessly.
               Track clicks and get the insights you need to grow.
             </p>
