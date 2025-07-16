@@ -1,17 +1,19 @@
+[build]
+command = "npm run build"
+publish = "dist"
+
+# Handle short URLs - only single path segments that look like short codes
 [[redirects]]
-from = "/*"
-to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:splat"
+from = "/:code"
+to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:code"
 status = 302
 force = true
-
 [redirects.conditions]
-Path = [ "^/(?!dashboard|login|signup|pricing|assets/).*$" ]
+# Only match paths that look like short codes (6-10 alphanumeric characters)
+Path = "^/[a-zA-Z0-9_-]{6,10}$"
 
+# Handle all SPA routes
 [[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200
-
-[build]
-command = "npm run build"
-publish = "dist"
