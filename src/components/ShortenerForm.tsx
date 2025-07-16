@@ -44,41 +44,23 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
     if (!longUrl.trim()) return
 
     setIsLoading(true)
+    setError(null)
     try {
-      // Get the current user's session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      
-      if (sessionError) {
-        throw new Error('Failed to get session')
-      }
-      
-      if (!session?.access_token) {
-        throw new Error('You must be logged in to shorten URLs')
-      }
-
-      // Call the shorten-url Edge Function
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/shorten-url`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify({ 
+      // Call the shorten-url Edge Function using supabase.functions.invoke
+      const { data, error } = await supabase.functions.invoke('shorten-url', {
+        body: {
           long_url: longUrl,
           custom_slug: customSlug.trim() || undefined
-        })
+        }
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to shorten URL')
+      if (error) {
+        throw error
       }
 
-      const data = await response.json()
       setShortUrl(data.short_url)
       setLongUrl('')
       setCustomSlug('')
-      setError(null)
       onSuccess()
     } catch (error) {
       console.error('Error shortening URL:', error)
