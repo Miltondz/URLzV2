@@ -2,9 +2,7 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
-import { TubelightNavBar } from './ui/tubelight-navbar'
 import { Moon, Sun, LogOut, User, Link as LinkIcon, Settings, Menu, X } from 'lucide-react'
-import { Home, Zap, Users, Mail, BarChart3 } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
 export function Navigation() {
@@ -43,22 +41,8 @@ export function Navigation() {
     ...(user ? [{ path: '/dashboard', label: 'Dashboard' }] : [])
   ]
 
-  // Tubelight navbar items
-  const tubelightNavItems = [
-    { name: 'Home', url: '/', icon: Home },
-    { name: 'Features', url: '/features', icon: Zap },
-    { name: 'About', url: '/about', icon: Users },
-    { name: 'Contact', url: '/contact', icon: Mail },
-    ...(user ? [{ name: 'Dashboard', url: '/dashboard', icon: BarChart3 }] : [])
-  ]
-
   return (
-    <>
-      {/* Tubelight Navigation */}
-      <TubelightNavBar items={tubelightNavItems} />
-      
-      {/* Original Navigation - Hidden on mobile, visible on desktop as fallback */}
-      <nav className="hidden lg:block bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
+    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
@@ -192,7 +176,6 @@ export function Navigation() {
           </div>
         </div>
       )}
-      </nav>
-    </>
+    </nav>
   )
 }
