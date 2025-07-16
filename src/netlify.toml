@@ -1,0 +1,18 @@
+# --- Netlify Redirects Configuration for urlz.lat ---
+
+# Esta es la regla mágica. Le dice a Netlify cómo manejar los enlaces cortos.
+[[redirects]]
+  # "from": Captura cualquier petición a la raíz que no sea un archivo existente.
+  # :short_code es un placeholder que captura cualquier valor (ej: "5j8mUjMm").
+  from = "/:short_code"
+
+  # "to": A dónde debe redirigir la petición.
+  # Usamos la URL de tu función de Supabase y le pasamos el :short_code capturado.
+  to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
+
+  # "status": Usa un 301 para una redirección permanente, que es bueno para el SEO.
+  status = 301
+
+  # "force": ¡Esta es la clave! Obliga a que la redirección se aplique incluso si
+  # Netlify cree que debería mostrar un 404.
+  force = true
