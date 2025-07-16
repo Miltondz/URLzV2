@@ -20,13 +20,12 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 
 interface ClickData {
   id: string
-  ip_address: string
   country: string
   city: string
   browser_name: string
   os_name: string
   device_type: string
-  clicked_at: string
+  created_at: string
 }
 
 interface UrlData {
@@ -64,7 +63,7 @@ export function AnalyticsDetailPage() {
           .from('clicks_log')
           .select('*')
           .eq('url_id', linkId)
-          .order('clicked_at', { ascending: false })
+          .order('created_at', { ascending: false })
 
         if (clicksError) throw clicksError
         setClicksData(clicksInfo || [])
@@ -309,7 +308,7 @@ export function AnalyticsDetailPage() {
                     {clicksData.slice(0, 10).map((click) => (
                       <tr key={click.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                          {new Date(click.clicked_at).toLocaleString()}
+                          {new Date(click.created_at).toLocaleString()}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                           {click.city}, {click.country}
