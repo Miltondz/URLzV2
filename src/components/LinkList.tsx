@@ -51,8 +51,7 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
 
   const copyToClipboard = async (shortCode: string) => {
     try {
-      const appUrl = import.meta.env.VITE_APP_URL || 'https://urlz.lat'
-      await navigator.clipboard.writeText(`${appUrl}/${shortCode}`)
+      await navigator.clipboard.writeText(shortCode)
     } catch (error) {
       console.error('Failed to copy:', error)
     }
@@ -186,30 +185,21 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex items-center space-x-2">
-                            {(() => {
-                              // Determine the correct code to use - prioritize custom_slug
-                              const displayCode = link.custom_slug || link.short_code;
-                              const fullShortUrl = `${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${displayCode}`;
-                              return (
-                                <>
                             <a
-                              href={fullShortUrl}
+                              href={link.short_url}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                             >
-                              {fullShortUrl.replace('https://', '')}
+                              {link.short_url.replace('https://', '')}
                             </a>
                             <button
-                              onClick={() => copyToClipboard(displayCode)}
+                              onClick={() => copyToClipboard(link.short_url)}
                               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                               title="Copy to clipboard"
                             >
                               <Copy className="h-4 w-4" />
                             </button>
-                                </>
-                              );
-                            })()}
                           </div>
                         </td>
                         <td className="px-4 py-4">
@@ -272,30 +262,21 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         Short URL
                       </label>
                       <div className="flex items-center space-x-2 mt-1">
-                        {(() => {
-                          // Determine the correct code to use - prioritize custom_slug
-                          const displayCode = link.custom_slug || link.short_code;
-                          const fullShortUrl = `${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${displayCode}`;
-                          return (
-                            <>
                         <a
-                          href={fullShortUrl}
+                          href={link.short_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors break-all"
                         >
-                          {fullShortUrl.replace('https://', '')}
+                          {link.short_url.replace('https://', '')}
                         </a>
                         <button
-                          onClick={() => copyToClipboard(displayCode)}
+                          onClick={() => copyToClipboard(link.short_url)}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
                           title="Copy to clipboard"
                         >
                           <Copy className="h-4 w-4" />
                         </button>
-                            </>
-                          );
-                        })()}
                       </div>
                     </div>
 
