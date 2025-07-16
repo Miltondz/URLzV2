@@ -1,62 +1,55 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
+// Define CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-};
+}
 
 Deno.serve(async (req) => {
+  // Handle preflight OPTIONS request
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    const supabaseClient = createClient(
+    // Create a client scoped to the user's request to handle auth automatically.
+    const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
-    );
+    )
 
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    if (!user) {
-      return new Response(JSON.stringify({ error: 'User not found' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 401,
-      });
+    // Get the user from the request's token.
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders })
     }
 
-    // Get user stats directly from the urls table
-    const { data, error } = await supabaseClient
-      .from('urls')
-      .select('clicks')
-      .eq('user_id', user.id);
+    // --- OPTIMIZED LOGIC ---
+    // Call the database function 'get_user_stats' via RPC.
+    // This is much more performant than fetching all rows.
+    const { data: stats, error: rpcError } = await supabase.rpc('get_user_stats', { p_user_id: user.id });
 
-    if (error) {
-      console.error('Database error:', error);
-      throw error;
+    if (rpcError) {
+      console.error('RPC Error:', rpcError);
+      throw rpcError; // Let the general error handler catch it.
     }
+    
+    // The RPC function returns an array with one object.
+    // If no stats are found (e.g., new user), provide default zero values.
+    const userStats = stats[0] || { total_links: 0, total_clicks: 0, avg_clicks: 0 };
 
-    // Calculate stats from the data
-    const totalLinks = data.length;
-    const totalClicks = data.reduce((sum, url) => sum + (url.clicks || 0), 0);
-    const avgClicks = totalLinks > 0 ? totalClicks / totalLinks : 0;
-
-    const stats = {
-      totalLinks,
-      totalClicks,
-      avgClicks: Math.round(avgClicks * 10) / 10 // Round to 1 decimal place
-    };
-
-    return new Response(JSON.stringify(stats), {
+    return new Response(JSON.stringify(userStats), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
-    });
+    })
+
   } catch (error) {
-    console.error('Function error:', error);
+    console.error('Function error:', error)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 400,
-    });
+      status: 500,
+    })
   }
-});
+})
