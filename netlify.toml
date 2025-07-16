@@ -1,17 +1,24 @@
+# --- Configuración Final y Definitiva para Netlify ---
+
+# Regla 1: Manejar las redirecciones de enlaces cortos.
+# Esta regla es para las redirecciones del lado del servidor.
 [[redirects]]
-from = "/:short_code"
-to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
-status = 301
-force = true
+  # Captura cualquier ruta que no sea una de las rutas conocidas de la app.
+  from = "/:short_code"
+  
+  # Redirige a la función de Supabase.
+  to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
+  
+  # ¡CAMBIO CLAVE! Usamos 302 para una redirección temporal.
+  # Esto le dice al navegador que realmente vaya a la nueva URL.
+  status = 302
+  
+  # La condición para evitar que interfiera con las rutas de tu app.
+  conditions = {Path = ["^/(?!dashboard|login|signup|pricing).*$"]}
 
-[redirects.conditions]
-Path = [ "^/(?!dashboard|login|signup).*$" ]
-
+# Regla 2: La regla "Catch-All" para tu aplicación de React (SPA).
+# Esto maneja los refrescos de página en las rutas de tu app.
 [[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
-
-[build]
-command = "npm run build"
-publish = "dist"
+  from = "/*"
+  to = "/index.html"
+  status = 200
