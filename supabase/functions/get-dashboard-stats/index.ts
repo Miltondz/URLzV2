@@ -1,3 +1,5 @@
+// Copia y pega este código completo en el editor de Supabase
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 // Define CORS headers
@@ -26,14 +28,13 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders })
     }
 
-    // --- OPTIMIZED LOGIC ---
     // Call the database function 'get_user_stats' via RPC.
     // This is much more performant than fetching all rows.
     const { data: stats, error: rpcError } = await supabase.rpc('get_user_stats', { p_user_id: user.id });
 
     if (rpcError) {
       console.error('RPC Error:', rpcError);
-      throw rpcError; // Let the general error handler catch it.
+      throw rpcError;
     }
     
     // The RPC function returns an array with one object.
