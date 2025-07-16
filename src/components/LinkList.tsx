@@ -186,13 +186,17 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex items-center space-x-2">
+                            {(() => {
+                              const fullShortUrl = `${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${link.short_code}`;
+                              return (
+                                <>
                             <a
-                              href={`${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${link.short_code}`}
+                              href={fullShortUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                             >
-                              {(import.meta.env.VITE_APP_URL || 'https://urlz.lat').replace(/^https?:\/\//, '')}/{link.short_code}
+                              {fullShortUrl.replace('https://', '')}
                             </a>
                             <button
                               onClick={() => copyToClipboard(link.short_code)}
@@ -201,6 +205,9 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                             >
                               <Copy className="h-4 w-4" />
                             </button>
+                                </>
+                              );
+                            })()}
                           </div>
                         </td>
                         <td className="px-4 py-4">
@@ -263,13 +270,17 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         Short URL
                       </label>
                       <div className="flex items-center space-x-2 mt-1">
+                        {(() => {
+                          const fullShortUrl = `${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${link.short_code}`;
+                          return (
+                            <>
                         <a
-                          href={`${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${link.short_code}`}
+                          href={fullShortUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors break-all"
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors break-all"
                         >
-                          {(import.meta.env.VITE_APP_URL || 'https://urlz.lat').replace(/^https?:\/\//, '')}/{link.short_code}
+                          {fullShortUrl.replace('https://', '')}
                         </a>
                         <button
                           onClick={() => copyToClipboard(link.short_code)}
@@ -278,6 +289,9 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         >
                           <Copy className="h-4 w-4" />
                         </button>
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
 
