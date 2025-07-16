@@ -65,7 +65,7 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
       onSuccess()
     } catch (error) {
       console.error('Error shortening URL:', error)
-      setError(error?.message || 'An unexpected error occurred. Please try again.')
+      setError(error.message || 'An unexpected error occurred.')
     } finally {
       setIsLoading(false)
     }
