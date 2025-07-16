@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
     }
 
     // Obtiene los datos del cuerpo de la petición
-    const { long_url, custom_slug } = await req.json()
+    const { long_url, custom_slug, is_verified } = await req.json()
 
     // Valida que la URL larga exista y tenga un formato válido
     if (!long_url || !/^https?:\/\//.test(long_url)) {
@@ -103,6 +103,7 @@ Deno.serve(async (req) => {
         long_url,
         short_code: final_short_code,   // Se guarda el código aleatorio (o null si es slug)
         custom_slug: final_custom_slug, // Se guarda el slug personalizado (o null si es aleatorio)
+        is_verified: is_verified || false, // Se guarda el estado de verificación
       })
       .select()
       .single()

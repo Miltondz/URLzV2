@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ExternalLink, BarChart3, Calendar, Copy, Trash2 } from 'lucide-react'
+import { ExternalLink, BarChart3, Calendar, Copy, Trash2, Eye, Shield } from 'lucide-react'
 import { ConfirmDialog } from './ConfirmDialog'
+import { LinkPreviewModal } from './LinkPreviewModal'
 import { supabase } from '../lib/supabase'
 
 interface LinkData {
@@ -10,6 +11,7 @@ interface LinkData {
   short_code: string | null
   custom_slug: string | null
   clicks: number
+  is_verified: boolean
   created_at: string
 }
 
@@ -22,6 +24,13 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
   const [localLinks, setLocalLinks] = useState<LinkData[]>(links)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [previewModal, setPreviewModal] = useState<{
+    isOpen: boolean
+    url: string
+  }>({
+    isOpen: false,
+    url: ''
+  })
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean
@@ -44,6 +53,20 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
     } catch (error) {
       console.error('Failed to copy:', error)
     }
+  }
+
+  const openPreviewModal = (url: string) => {
+    setPreviewModal({
+      isOpen: true,
+      url
+    })
+  }
+
+  const closePreviewModal = () => {
+    setPreviewModal({
+      isOpen: false,
+      url: ''
+    })
   }
 
   const openDeleteDialog = (id: string, longUrl: string) => {
@@ -196,10 +219,20 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           <div className="flex items-center space-x-2">
                             <Link
                               to={`/dashboard/analytics/${link.id}`}
-                              className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                              className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-1"
                             >
-                              {code}
+                              <span>{code}</span>
+                              {link.is_verified && (
+                                <Shield className="h-3 w-3 text-green-600 dark:text-green-400" title="Verified safe" />
+                              )}
                             </Link>
+                            <button
+                              onClick={() => openPreviewModal(link.long_url)}
+                              className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                              title="Preview link"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </button>
                             <Link
                               to={`/dashboard/analytics/${link.id}`}
                               className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
@@ -285,11 +318,21 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                       <div className="flex items-center space-x-2 mt-1">
                         <Link
                           to={`/dashboard/analytics/${link.id}`}
-                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-1"
                           title={code}
                         >
-                          {code}
+                          <span className="truncate">{code}</span>
+                          {link.is_verified && (
+                            <Shield className="h-3 w-3 text-green-600 dark:text-green-400 flex-shrink-0" title="Verified safe" />
+                          )}
                         </Link>
+                        <button
+                          onClick={() => openPreviewModal(link.long_url)}
+                          className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 p-1"
+                          title="Preview link"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </button>
                         <Link
                           to={`/dashboard/analytics/${link.id}`}
                           className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 p-1"
@@ -363,6 +406,13 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
         onConfirm={deleteLink}
         onCancel={closeDeleteDialog}
         isLoading={deletingId === deleteDialog.linkId}
+      />
+
+      {/* Link Preview Modal */}
+      <LinkPreviewModal
+        isOpen={previewModal.isOpen}
+        onClose={closePreviewModal}
+        url={previewModal.url}
       />
     </>
   )

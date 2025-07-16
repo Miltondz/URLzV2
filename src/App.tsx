@@ -12,6 +12,7 @@ import { Features } from './pages/Features'
 import { Contact } from './pages/Contact'
 import { Dashboard } from './pages/Dashboard'
 import { ProfilePage } from './pages/ProfilePage'
+import { TransparencyPage } from './pages/TransparencyPage'
 import { AnalyticsDetailPage } from './pages/AnalyticsDetailPage'
 import { Redirect } from './pages/Redirect'
 import { useAuth } from './contexts/AuthContext'
@@ -36,6 +37,7 @@ function AppContent() {
           <Route path="/about" element={<About />} />
           <Route path="/features" element={<Features />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/transparency" element={<TransparencyPage />} />
           <Route 
             path="/login" 
             element={user ? <Navigate to="/dashboard" replace /> : <AuthComponent />} 

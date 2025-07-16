@@ -146,6 +146,14 @@ export function Footer() {
                 </a>
               </li>
               <li>
+                <Link
+                  to="/transparency"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
+                >
+                  Transparency
+                </Link>
+              </li>
+              <li>
                 <a
                   href="#"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { Link2, Copy, Check, X, Lock, Crown } from 'lucide-react'
+import { Link2, Copy, Check, X, Lock, Crown, Shield, AlertTriangle } from 'lucide-react'
 
 interface ShortenerFormProps {
   onSuccess: () => void
@@ -17,6 +17,8 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
   const [error, setError] = useState<string | null>(null)
   const [isPro, setIsPro] = useState(false)
   const [subscriptionLoading, setSubscriptionLoading] = useState(true)
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [isVerified, setIsVerified] = useState<boolean | null>(null)
 
   // Fetch user's subscription status
   useEffect(() => {
@@ -40,6 +42,29 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
     fetchSubscriptionStatus()
   }, [])
 
+  // Verify URL when user leaves the long URL input
+  const handleUrlBlur = async () => {
+    if (!longUrl.trim() || !longUrl.startsWith('http')) {
+      setIsVerified(null)
+      return
+    }
+
+    setIsVerifying(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-url', {
+        body: { long_url: longUrl }
+      })
+
+      if (error) throw error
+      setIsVerified(data.isSafe)
+    } catch (error) {
+      console.error('Error verifying URL:', error)
+      setIsVerified(null) // Default to unverified if check fails
+    } finally {
+      setIsVerifying(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!longUrl.trim()) return
@@ -52,7 +77,8 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
       const { data, error } = await supabase.functions.invoke('shorten-url', {
         body: {
           long_url: longUrl,
-          custom_slug: customSlug.trim() || undefined
+          custom_slug: customSlug.trim() || undefined,
+          is_verified: isVerified || false
         }
       })
 
@@ -63,6 +89,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
       setShortUrl(data.short_url)
       setLongUrl('')
       setCustomSlug('')
+      setIsVerified(null)
       onSuccess()
       refetchStats() // Update stats after successful URL creation
     } catch (error) {
@@ -104,28 +131,76 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                 id="longUrl"
                 value={longUrl}
                 onChange={(e) => setLongUrl(e.target.value)}
+                onBlur={handleUrlBlur}
                 placeholder="https://example.com/very/long/url"
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-12 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
+                className={`w-full px-3 sm:px-4 py-2 sm:py-3 pr-12 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors ${
+                  isVerified === true ? 'border-green-300 dark:border-green-600' :
+                  isVerified === false ? 'border-red-300 dark:border-red-600' :
+                  'border-gray-300 dark:border-gray-600'
+                }`}
                 required
               />
-              <button
+              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
+                {/* Verification Status */}
+                {isVerifying ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                ) : isVerified === true ? (
+                  <div className="group relative">
+                    <Shield className="h-4 w-4 text-green-600" />
+                    <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block z-10">
+                      <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                        URL verified as safe
+                        <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                  </div>
+                ) : isVerified === false ? (
+                  <div className="group relative">
+                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block z-10">
+                      <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                        URL flagged as potentially unsafe
+                        <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+                
+                {/* Paste Button */}
+                <button
                 type="button"
                 onClick={async () => {
                   try {
                     const text = await navigator.clipboard.readText()
                     setLongUrl(text)
+                    setIsVerified(null) // Reset verification when pasting
                   } catch (error) {
                     console.error('Failed to paste:', error)
                   }
-                }}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 title="Paste from clipboard"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </button>
+              </div>
             </div>
+            
+            {/* Verification Status Message */}
+            {isVerified === false && (
+              <p className="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center space-x-1">
+                <AlertTriangle className="h-3 w-3" />
+                <span>This URL has been flagged as potentially unsafe</span>
+              </p>
+            )}
+            {isVerified === true && (
+              <p className="mt-1 text-xs text-green-600 dark:text-green-400 flex items-center space-x-1">
+                <Shield className="h-3 w-3" />
+                <span>URL verified as safe</span>
+              </p>
+            )}
           </div>
 
           <div className="lg:col-span-3">
@@ -198,15 +273,21 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
 
         <button
           type="submit"
-          disabled={isLoading || !longUrl.trim()}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-2 sm:py-3 px-4 text-sm sm:text-base rounded-lg transition-colors flex items-center justify-center space-x-2"
+          disabled={isLoading || !longUrl.trim() || isVerifying}
+          className={`w-full font-medium py-2 sm:py-3 px-4 text-sm sm:text-base rounded-lg transition-colors flex items-center justify-center space-x-2 ${
+            isVerified === false 
+              ? 'bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 text-white'
+              : 'bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white'
+          }`}
         >
-          {isLoading ? (
+          {isLoading || isVerifying ? (
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
           ) : (
             <>
               <Link2 className="h-4 w-4" />
-              <span>Shorten URL</span>
+              <span>
+                {isVerified === false ? 'Shorten Anyway' : 'Shorten URL'}
+              </span>
             </>
           )}
         </button>
