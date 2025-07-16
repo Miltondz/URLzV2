@@ -77,8 +77,6 @@ function AppContent() {
 }
 
 function App() {
-          }
-  )
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -89,5 +87,3 @@ function App() {
 }
 
 export default App
-  )
-}
