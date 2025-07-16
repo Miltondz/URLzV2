@@ -1,19 +1,21 @@
-[build]
-command = "npm run build"
-publish = "dist"
+# --- CONFIGURACIÓN DE REDIRECCIÓN FINAL Y ROBUSTA ---
 
-# Handle short URLs - only single path segments that look like short codes
+# Regla 1: Redirección de Enlaces Cortos con Prefijo /r/
+# Esta regla es súper específica y no tiene ambigüedades.
 [[redirects]]
-from = "/:code"
-to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:code"
-status = 302
-force = true
-[redirects.conditions]
-# Only match paths that look like short codes (6-10 alphanumeric characters)
-Path = "^/[a-zA-Z0-9_-]{6,10}$"
+  # 'from' captura cualquier petición que empiece con /r/
+  from = "/r/:short_code"
+  
+  # 'to' la reenvía a tu función de Supabase.
+  to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
+  
+  # 'status = 302' es una redirección temporal que le dice al navegador que cambie la URL.
+  status = 302
 
-# Handle all SPA routes
+
+# Regla 2: Regla "Catch-All" para tu aplicación de React (SPA).
+# Esta regla se ejecuta para TODO LO DEMÁS.
 [[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
+  from = "/*"
+  to = "/index.html"
+  status = 200
