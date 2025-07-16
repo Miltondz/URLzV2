@@ -1,0 +1,2 @@
+# Redirect all short codes to a redirect handler page
+/*  /redirect/:splat  200
