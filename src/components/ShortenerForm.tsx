@@ -93,68 +93,107 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="longUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Enter your long URL
-          </label>
-          <input
-            type="url"
-            id="longUrl"
-            value={longUrl}
-            onChange={(e) => setLongUrl(e.target.value)}
-            placeholder="https://example.com/very/long/url"
-            className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
-            required
-          />
-        </div>
-
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label htmlFor="customSlug" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Custom Slug (Optional)
+        <div className="grid grid-cols-1 lg:grid-cols-10 gap-4">
+          <div className="lg:col-span-7">
+            <label htmlFor="longUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Enter your long URL
             </label>
-            {!isPro && (
-              <div className="flex items-center space-x-1">
-                <Crown className="h-4 w-4 text-yellow-500" />
-                <span className="text-xs font-medium text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 px-2 py-1 rounded">
-                  PRO
-                </span>
-              </div>
-            )}
+            <div className="relative">
+              <input
+                type="url"
+                id="longUrl"
+                value={longUrl}
+                onChange={(e) => setLongUrl(e.target.value)}
+                placeholder="https://example.com/very/long/url"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-12 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
+                required
+              />
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const text = await navigator.clipboard.readText()
+                    setLongUrl(text)
+                  } catch (error) {
+                    console.error('Failed to paste:', error)
+                  }
+                }}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                title="Paste from clipboard"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className="relative">
-            <input
-              type="text"
-              id="customSlug"
-              value={customSlug}
-              onChange={(e) => setCustomSlug(e.target.value)}
-              placeholder="my-custom-link"
-              disabled={!isPro || subscriptionLoading}
-              className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                !isPro 
-                  ? 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
-                  : 'border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
-              }`}
-            />
-            {!isPro && (
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <div className="group relative">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                  <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block z-10">
-                    <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-                      Upgrade to Pro to use custom slugs!
-                      <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+
+          <div className="lg:col-span-3">
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="customSlug" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Custom Slug (Optional)
+              </label>
+              {!isPro && (
+                <div className="flex items-center space-x-1">
+                  <Crown className="h-4 w-4 text-yellow-500" />
+                  <span className="text-xs font-medium text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 px-2 py-1 rounded">
+                    PRO
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="relative">
+              <input
+                type="text"
+                id="customSlug"
+                value={customSlug}
+                onChange={(e) => setCustomSlug(e.target.value)}
+                placeholder="my-custom-link"
+                disabled={!isPro || subscriptionLoading}
+                className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                  !isPro 
+                    ? 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed pr-12' 
+                    : 'border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white pr-12'
+                }`}
+              />
+              {isPro ? (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      const text = await navigator.clipboard.readText()
+                      setCustomSlug(text)
+                    } catch (error) {
+                      console.error('Failed to paste:', error)
+                    }
+                  }}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  title="Paste from clipboard"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </button>
+              ) : (
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <div className="group relative">
+                    <Lock className="h-5 w-5 text-gray-400" />
+                    <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block z-10">
+                      <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                        Upgrade to Pro to use custom slugs!
+                        <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
+            </div>
+            {!isPro && (
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Create memorable, branded links with a Pro subscription
+              </p>
             )}
           </div>
-          {!isPro && (
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Create memorable, branded links with a Pro subscription
-            </p>
-          )}
         </div>
 
         <button
