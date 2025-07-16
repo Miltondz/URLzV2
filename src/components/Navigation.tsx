@@ -100,26 +100,3 @@ export function Navigation() {
     </nav>
   )
 }
-                </div>
-                <button
-                  onClick={signOut}
-                  className="flex items-center space-x-1 px-2 sm:px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Logout</span>
-                </button>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-medium transition-colors"
-              >
-                Login
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
-    </nav>
-  )
-}
