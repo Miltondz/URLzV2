@@ -68,6 +68,7 @@ function AppContent() {
           {/* Catch-all route for short codes */}
           <Route path="/:shortCode" element={<Redirect />} />
         </Routes>
+        </div>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors pt-20 pb-20">
         <Footer />
       </div>
