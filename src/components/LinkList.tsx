@@ -220,6 +220,13 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
                             >
                               {displayText}
                             </a>
+                            <Link
+                              to={`/dashboard/analytics/${link.id}`}
+                              className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                              title="View analytics"
+                            >
+                              <BarChart3 className="h-4 w-4" />
+                            </Link>
                             <button
                               onClick={() => copyToClipboard(fullShortUrl)}
                               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
@@ -306,6 +313,13 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
                         >
                           {displayText}
                         </a>
+                        <Link
+                          to={`/dashboard/analytics/${link.id}`}
+                          className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 p-1"
+                          title="View analytics"
+                        >
+                          <BarChart3 className="h-4 w-4" />
+                        </Link>
                         <button
                           onClick={() => copyToClipboard(fullShortUrl)}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"

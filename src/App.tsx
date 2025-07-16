@@ -8,6 +8,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { Home } from './pages/Home'
 import { Dashboard } from './pages/Dashboard'
 import { ProfilePage } from './pages/ProfilePage'
+import { AnalyticsDetailPage } from './pages/AnalyticsDetailPage'
 import { Redirect } from './pages/Redirect'
 import { useAuth } from './contexts/AuthContext'
 
@@ -45,6 +46,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard/analytics/:linkId" 
+            element={
+              <ProtectedRoute>
+                <AnalyticsDetailPage />
               </ProtectedRoute>
             } 
           />
