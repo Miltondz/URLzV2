@@ -7,21 +7,17 @@ const corsHeaders = {
 };
 
 Deno.serve(async (req) => {
-  // This is needed if you're planning to invoke your function from a browser.
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
-    // Create a Supabase client with the Auth context of the user that called the function.
-    // This way your row-level-security (RLS) policies are applied.
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     );
 
-    // Now we can get the session or user object
     const { data: { user } } = await supabaseClient.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: 'User not found' }), {
@@ -30,19 +26,34 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Call the database function 'get_user_stats'
-    const { data, error } = await supabaseClient.rpc('get_user_stats', { p_user_id: user.id });
+    // Get user stats directly from the urls table
+    const { data, error } = await supabaseClient
+      .from('urls')
+      .select('clicks')
+      .eq('user_id', user.id);
 
     if (error) {
+      console.error('Database error:', error);
       throw error;
     }
 
-    // The RPC function returns an array with one object, so we return the first element.
-    return new Response(JSON.stringify(data[0]), {
+    // Calculate stats from the data
+    const totalLinks = data.length;
+    const totalClicks = data.reduce((sum, url) => sum + (url.clicks || 0), 0);
+    const avgClicks = totalLinks > 0 ? totalClicks / totalLinks : 0;
+
+    const stats = {
+      totalLinks,
+      totalClicks,
+      avgClicks: Math.round(avgClicks * 10) / 10 // Round to 1 decimal place
+    };
+
+    return new Response(JSON.stringify(stats), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });
   } catch (error) {
+    console.error('Function error:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
