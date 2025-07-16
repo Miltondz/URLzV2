@@ -8,9 +8,9 @@ export function Home() {
   const { user } = useAuth()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 relative overflow-hidden">
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-20 pb-12 sm:pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-20 pb-12 sm:pb-16 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
           <div className="text-center lg:text-left">
@@ -61,16 +61,23 @@ export function Home() {
           </div>
 
           {/* Right side - Globe component */}
-          <div className="flex justify-center lg:justify-end">
-            <div className="w-full max-w-lg h-96 relative">
+          <div className="flex justify-center lg:justify-end relative">
+            <div className="w-full max-w-lg h-96 relative z-20">
               <GlobeDemo />
             </div>
           </div>
         </div>
       </div>
 
+      {/* Background Globe - Positioned behind content */}
+      <div className="absolute top-0 right-0 w-full h-full opacity-30 dark:opacity-20 pointer-events-none">
+        <div className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/4 scale-150">
+          <GlobeDemo />
+        </div>
+      </div>
+
       {/* Features Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 relative z-10">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Tools That Make Every Click Count
