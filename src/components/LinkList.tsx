@@ -287,6 +287,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           to={`/dashboard/analytics/${link.id}`}
                           className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                           title={code}
+                        >
                           {code}
                         </Link>
                         <Link
