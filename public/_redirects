@@ -1,2 +1,3 @@
 # Redirect all short codes to a redirect handler page
-/*  /redirect/:splat  200
+# Direct redirect to your existing edge function
+/*  https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:splat  301
