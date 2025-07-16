@@ -1,12 +1,18 @@
+# --- Configuración Final y Completa para Netlify ---
+
+# Regla 1: Manejar las redirecciones de enlaces cortos.
+# Esto debe ir PRIMERO para que tenga prioridad.
 [[redirects]]
-from = "/:short_code"
-to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
-status = 301
-force = true
+  from = "/:short_code"
+  to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
+  status = 301
+  force = true
+  # Condición: Solo aplica esta regla si la ruta NO es una de las rutas de la app.
+  conditions = {Path = ["^/(?!dashboard|login|signup).*$"]}
 
-[redirects.headers]
-Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmaXZhbndrdnRqb3lrcGNqY3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI0NTg5ODIsImV4cCI6MjA2ODAzNDk4Mn0.yvlNL-vV-cyABTkc2RZVNFmduHcKtg3GZsJ9le7jpcQ"
-
-[build]
-command = "npm run build"
-publish = "dist"
+# Regla 2: La regla "Catch-All" para Single Page Applications (SPA).
+# Esto maneja los refrescos de página y las URLs escritas directamente.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
