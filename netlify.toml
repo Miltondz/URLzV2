@@ -1,13 +1,13 @@
-# Regla 1: Para redirecciones de enlaces cortos
 [[redirects]]
-  from = "/r/:short_code"
-  to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
-  status = 302
+from = "/r/:short_code"
+to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
+status = 302
 
-# Regla 2: Para la aplicación de React (SPA)
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+from = "/*"
+to = "/index.html"
+status = 200
 
 [build]
+command = "npm run build"
+publish = "dist"
