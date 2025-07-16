@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
     // Extract the short code from the URL path
     const url = new URL(req.url)
     const pathParts = url.pathname.split('/')
-    const code = pathParts[pathParts.length - 1]
+    const code = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2]
 
     if (!code) {
       return new Response('Short code is missing', {
@@ -54,8 +54,8 @@ Deno.serve(async (req) => {
     // Find the URL record by short_code
     const { data: urlRecord, error } = await supabaseAdmin
       .from('urls')
-      .select('id, long_url')
-      .eq('short_code', code)
+      .select('id, long_url, short_code, custom_slug')
+      .or(`short_code.eq.${code},custom_slug.eq.${code}`)
       .single()
 
     if (error) {
