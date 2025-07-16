@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { GlobeDemo } from '../components/ui/globe-demo'
 import { Link2, Zap, Shield, BarChart3, ArrowRight } from 'lucide-react'
 
 export function Home() {
@@ -10,50 +11,60 @@ export function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-20 pb-12 sm:pb-16">
-        <div className="text-center">
-          <div className="flex justify-center mb-8">
-            <div className="p-4 bg-blue-100 dark:bg-blue-900 rounded-full">
-              <Link2 className="h-16 w-16 text-blue-600 dark:text-blue-400" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Left side - Text content */}
+          <div className="text-center lg:text-left">
+            <div className="flex justify-center lg:justify-start mb-8">
+              <div className="p-4 bg-blue-100 dark:bg-blue-900 rounded-full">
+                <Link2 className="h-16 w-16 text-blue-600 dark:text-blue-400" />
+              </div>
             </div>
-          </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 px-4">
-            Smarter Link Management
-            <br />
-            <span className="text-blue-600">Starts Here</span>
-          </h1>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 px-4 lg:px-0">
+              Smarter Link Management
+              <br />
+              <span className="text-blue-600">Starts Here</span>
+            </h1>
           
-          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto px-4">
-            Create short, branded links that boost your brand and improve performance effortlessly.
-            Track clicks and get the insights you need to grow.
-          </p>
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto lg:mx-0 px-4 lg:px-0">
+              Create short, branded links that boost your brand and improve performance effortlessly.
+              Track clicks and get the insights you need to grow.
+            </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
-            {user ? (
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors space-x-2"
-              >
-                <span>Go to Dashboard</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            ) : (
-              <>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start px-4 lg:px-0">
+              {user ? (
                 <Link
-                  to="/login"
+                  to="/dashboard"
                   className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors space-x-2"
                 >
-                  <span>Get Started</span>
+                  <span>Go to Dashboard</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  to="/login"
-                  className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 font-semibold rounded-lg transition-colors"
-                >
-                  Try Free Trial
-                </Link>
-              </>
-            )}
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors space-x-2"
+                  >
+                    <span>Get Started</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 font-semibold rounded-lg transition-colors"
+                  >
+                    Try Free Trial
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Right side - Globe component */}
+          <div className="flex justify-center lg:justify-end">
+            <div className="w-full max-w-lg h-96 relative">
+              <GlobeDemo />
+            </div>
           </div>
         </div>
       </div>
