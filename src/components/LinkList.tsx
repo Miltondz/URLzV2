@@ -187,7 +187,9 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                         <td className="px-4 py-4">
                           <div className="flex items-center space-x-2">
                             {(() => {
-                              const fullShortUrl = `${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${link.short_code}`;
+                              // Determine the correct code to use - prioritize custom_slug
+                              const displayCode = link.custom_slug || link.short_code;
+                              const fullShortUrl = `${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${displayCode}`;
                               return (
                                 <>
                             <a
@@ -199,7 +201,7 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                               {fullShortUrl.replace('https://', '')}
                             </a>
                             <button
-                              onClick={() => copyToClipboard(link.short_code)}
+                              onClick={() => copyToClipboard(displayCode)}
                               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                               title="Copy to clipboard"
                             >
@@ -271,7 +273,9 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                       </label>
                       <div className="flex items-center space-x-2 mt-1">
                         {(() => {
-                          const fullShortUrl = `${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${link.short_code}`;
+                          // Determine the correct code to use - prioritize custom_slug
+                          const displayCode = link.custom_slug || link.short_code;
+                          const fullShortUrl = `${import.meta.env.VITE_APP_URL || 'https://urlz.lat'}/${displayCode}`;
                           return (
                             <>
                         <a
@@ -283,7 +287,7 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
                           {fullShortUrl.replace('https://', '')}
                         </a>
                         <button
-                          onClick={() => copyToClipboard(link.short_code)}
+                          onClick={() => copyToClipboard(displayCode)}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
                           title="Copy to clipboard"
                         >
