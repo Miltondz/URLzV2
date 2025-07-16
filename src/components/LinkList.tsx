@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
 import { ExternalLink, BarChart3, Calendar, Copy, Trash2 } from 'lucide-react'
 import { ConfirmDialog } from './ConfirmDialog'
+import { supabase } from '../lib/supabase'
 
-interface Link {
+interface LinkData {
   id: string
   long_url: string
   short_code: string | null
@@ -14,12 +14,12 @@ interface Link {
 }
 
 interface LinkListProps {
-  refreshTrigger: number
+  links: LinkData[]
   refetchStats: () => void
 }
 
-export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
-  const [links, setLinks] = useState<Link[]>([])
+export function LinkList({ links, refetchStats }: LinkListProps) {
+  const [localLinks, setLocalLinks] = useState<LinkData[]>(links)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -33,27 +33,10 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
     linkUrl: ''
   })
 
-  const fetchLinks = async () => {
-    setError(null)
-    try {
-      const { data, error } = await supabase
-        .from('urls')
-        .select('id, long_url, short_code, custom_slug, clicks, created_at')
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-      setLinks(data || [])
-    } catch (error) {
-      console.error('Error fetching links:', error)
-      setError(error instanceof Error ? error.message : 'Failed to load links')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   useEffect(() => {
-    fetchLinks()
-  }, [refreshTrigger])
+    setLocalLinks(links)
+    setIsLoading(false)
+  }, [links])
 
   const copyToClipboard = async (shortCode: string) => {
     try {
@@ -92,7 +75,7 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
       if (error) throw error
       
       // Remove the link from the local state
-      setLinks(links.filter(link => link.id !== linkId))
+      setLocalLinks(localLinks.filter(link => link.id !== linkId))
       closeDeleteDialog()
       refetchStats() // Update stats after successful deletion
     } catch (error) {
@@ -134,7 +117,7 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
             Your Links
           </h2>
           <span className="text-sm text-gray-500 dark:text-gray-400">
-            {links.length} {links.length === 1 ? 'link' : 'links'}
+            {localLinks.length} {localLinks.length === 1 ? 'link' : 'links'}
           </span>
         </div>
 
@@ -144,7 +127,7 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
             <p className="font-medium">Error loading links</p>
             <p className="text-sm mt-1">{error}</p>
             <button 
-              onClick={fetchLinks}
+              onClick={refetchStats}
               className="mt-2 text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
             >
               Retry
@@ -152,7 +135,7 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
           </div>
         )}
 
-        {links.length === 0 ? (
+        {localLinks.length === 0 ? (
           <div className="text-center py-12">
             <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
@@ -173,8 +156,8 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[200px]">
                         Original URL
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[180px]">
-                        Short URL
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px]">
+                        Short Code
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[80px]">
                         Clicks
@@ -188,12 +171,10 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
                     </tr>
                   </thead>
                   <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    {links.map((link) => (
+                    {localLinks.map((link) => (
                       <tr key={link.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         {(() => {
                           const code = link.custom_slug || link.short_code
-                          const fullShortUrl = `${window.location.origin}/r/${code}`
-                          const displayText = fullShortUrl.replace('https://', '')
                           
                           return (
                             <>
@@ -213,14 +194,12 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex items-center space-x-2">
-                            <a
-                              href={fullShortUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            <Link
+                              to={`/dashboard/analytics/${link.id}`}
+                              className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                             >
-                              {displayText}
-                            </a>
+                              {code}
+                            </Link>
                             <Link
                               to={`/dashboard/analytics/${link.id}`}
                               className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
@@ -229,7 +208,7 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
                               <BarChart3 className="h-4 w-4" />
                             </Link>
                             <button
-                              onClick={() => copyToClipboard(fullShortUrl)}
+                              onClick={() => copyToClipboard(`${window.location.origin}/r/${code}`)}
                               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                               title="Copy to clipboard"
                             >
@@ -274,12 +253,10 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
 
             {/* Mobile view */}
             <div className="lg:hidden space-y-4">
-              {links.map((link) => (
+              {localLinks.map((link) => (
                 <div key={link.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                   {(() => {
                     const code = link.custom_slug || link.short_code
-                    const fullShortUrl = `${window.location.origin}/r/${code}`
-                    const displayText = fullShortUrl.replace('https://', '')
                     
                     return (
                   <div className="space-y-3">
@@ -303,17 +280,15 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
                     
                     <div>
                       <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                        Short URL
+                        Short Code
                       </label>
                       <div className="flex items-center space-x-2 mt-1">
-                        <a
-                          href={fullShortUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors break-all"
-                        >
-                          {displayText}
-                        </a>
+                        <Link
+                          to={`/dashboard/analytics/${link.id}`}
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-1 font-mono hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                          title={code}
+                          {code}
+                        </Link>
                         <Link
                           to={`/dashboard/analytics/${link.id}`}
                           className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 p-1"
@@ -322,7 +297,7 @@ export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
                           <BarChart3 className="h-4 w-4" />
                         </Link>
                         <button
-                          onClick={() => copyToClipboard(fullShortUrl)}
+                          onClick={() => copyToClipboard(`${window.location.origin}/r/${code}`)}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
                           title="Copy to clipboard"
                         >
