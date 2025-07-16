@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { ShortenerForm } from '../components/ShortenerForm'
 import { LinkList } from '../components/LinkList'
+import { MostActiveLinks } from '../components/MostActiveLinks'
 import { BarChart3, Link2, TrendingUp } from 'lucide-react'
 
 interface DashboardStats {
@@ -21,7 +22,10 @@ export function Dashboard() {
 
   const handleSuccess = () => {
     setRefreshTrigger(prev => prev + 1)
-    fetchStats() // Refresh stats when a new URL is created
+  }
+
+  const refetchStats = () => {
+    fetchStats()
   }
 
   const fetchStats = async () => {
@@ -215,13 +219,18 @@ export function Dashboard() {
           </div>
         </div>
 
+        {/* Most Active Links */}
+        <div className="mb-6 sm:mb-8">
+          <MostActiveLinks />
+        </div>
+
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           <div className="lg:col-span-1">
-            <ShortenerForm onSuccess={handleSuccess} />
+            <ShortenerForm onSuccess={handleSuccess} refetchStats={refetchStats} />
           </div>
-          <div className="lg:col-span-2">
-            <LinkList refreshTrigger={refreshTrigger} />
+          <div className="lg:col-span-1">
+            <LinkList refreshTrigger={refreshTrigger} refetchStats={refetchStats} />
           </div>
         </div>
       </div>

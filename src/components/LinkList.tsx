@@ -14,9 +14,10 @@ interface Link {
 
 interface LinkListProps {
   refreshTrigger: number
+  refetchStats: () => void
 }
 
-export function LinkList({ refreshTrigger }: LinkListProps) {
+export function LinkList({ refreshTrigger, refetchStats }: LinkListProps) {
   const [links, setLinks] = useState<Link[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -92,6 +93,7 @@ export function LinkList({ refreshTrigger }: LinkListProps) {
       // Remove the link from the local state
       setLinks(links.filter(link => link.id !== linkId))
       closeDeleteDialog()
+      refetchStats() // Update stats after successful deletion
     } catch (error) {
       console.error('Error deleting link:', error)
       alert('Failed to delete link. Please try again.')

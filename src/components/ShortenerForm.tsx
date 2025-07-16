@@ -5,9 +5,10 @@ import { Link2, Copy, Check, X, Lock, Crown } from 'lucide-react'
 
 interface ShortenerFormProps {
   onSuccess: () => void
+  refetchStats: () => void
 }
 
-export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
+export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
   const [longUrl, setLongUrl] = useState('')
   const [customSlug, setCustomSlug] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -63,6 +64,7 @@ export function ShortenerForm({ onSuccess }: ShortenerFormProps) {
       setLongUrl('')
       setCustomSlug('')
       onSuccess()
+      refetchStats() // Update stats after successful URL creation
     } catch (error) {
       console.error('Error shortening URL:', error)
       setError(error.message || 'An unexpected error occurred.')

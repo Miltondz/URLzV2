@@ -7,6 +7,7 @@ import { AuthComponent } from './components/Auth'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Home } from './pages/Home'
 import { Dashboard } from './pages/Dashboard'
+import { ProfilePage } from './pages/ProfilePage'
 import { Redirect } from './pages/Redirect'
 import { useAuth } from './contexts/AuthContext'
 
@@ -36,6 +37,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
               </ProtectedRoute>
             } 
           />
