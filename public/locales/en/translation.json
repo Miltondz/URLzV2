@@ -7,7 +7,10 @@
     "dashboard": "Dashboard",
     "login": "Login",
     "logout": "Logout",
-    "profile_settings": "Profile Settings"
+    "profile_settings": "Profile Settings",
+    "donate": "Donate",
+    "donate_thanks": "Thanks for your support!",
+    "donate_confirm": "Would you like to support urlz.lat development with a donation? You will be redirected to Flow to complete the payment."
   },
   "hero": {
     "title": "Short links,",

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
 import { LanguageSwitcher } from './LanguageSwitcher'
-import { Moon, Sun, LogOut, User, Link as LinkIcon, Settings, Menu, X } from 'lucide-react'
+import { Moon, Sun, LogOut, User, Link as LinkIcon, Settings, Menu, X, Heart } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
 export function Navigation() {
@@ -17,6 +17,20 @@ export function Navigation() {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleDonation = () => {
+    const confirmed = window.confirm(
+      '¿Deseas apoyar el desarrollo de urlz.lat con una donación? Serás redirigido a Flow para completar el pago.'
+    )
+    
+    if (confirmed) {
+      window.open(
+        'https://www.flow.cl/btn.php?token=qc174558592341e6cf3d88f836f698152805f777',
+        '_blank',
+        'noopener,noreferrer'
+      )
+    }
+  }
 
   const handleLogout = async () => {
     if (isLoggingOut) return // Prevent multiple logout attempts
@@ -95,6 +109,21 @@ export function Navigation() {
 
           {/* Right side controls */}
           <div className="flex items-center space-x-4">
+            {/* Donation Button */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handleDonation}
+                className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+                title="Apoyar el proyecto con una donación"
+              >
+                <Heart className="h-4 w-4 animate-pulse" />
+                <span className="hidden sm:inline">Donar</span>
+              </button>
+              <span className="hidden lg:inline text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                ¡Gracias por tu apoyo!
+              </span>
+            </div>
+
             {/* Language Switcher */}
             <div className="hidden sm:block">
               <LanguageSwitcher />
@@ -214,6 +243,15 @@ export function Navigation() {
                 {t('nav.login')}
               </Link>
             )}
+            
+            {/* Mobile Donation Button */}
+            <button
+              onClick={handleDonation}
+              className="flex items-center justify-center space-x-2 px-3 py-2 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white text-base font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+            >
+              <Heart className="h-4 w-4 animate-pulse" />
+              <span>Donar - ¡Gracias por tu apoyo!</span>
+            </button>
           </div>
         </div>
       )}
