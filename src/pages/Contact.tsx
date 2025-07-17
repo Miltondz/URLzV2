@@ -66,7 +66,7 @@ export function Contact() {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('contact.email')}</h3>
                     <p className="text-gray-600 dark:text-gray-400">support@urlz.lat</p>
-                    <p className="text-gray-600 dark:text-gray-400">hello@urlz.lat</p>
+                    <p className="text-gray-600 dark:text-gray-400">miltonstartup@gmail.com</p>
                   </div>
                 </div>
 
@@ -78,7 +78,7 @@ export function Contact() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('contact.phone')}</h3>
-                    <p className="text-gray-600 dark:text-gray-400">+1 (555) 123-4567</p>
+                    <p className="text-gray-600 dark:text-gray-400">+56 9 2185 7846</p>
                     <p className="text-sm text-gray-500 dark:text-gray-500">Mon-Fri 9AM-6PM EST</p>
                   </div>
                 </div>
@@ -92,9 +92,8 @@ export function Contact() {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('contact.office')}</h3>
                     <p className="text-gray-600 dark:text-gray-400">
-                      123 Tech Street<br />
-                      San Francisco, CA 94105<br />
-                      United States
+                      Santiago, Región Metropolitana<br />
+                      Chile
                     </p>
                   </div>
                 </div>
