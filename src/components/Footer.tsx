@@ -71,14 +71,6 @@ export function Footer() {
                   Dashboard
                 </Link>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  API Documentation
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -135,14 +127,6 @@ export function Footer() {
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
                   Terms of Service
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Privacy Policy
                 </a>
               </li>
               <li>

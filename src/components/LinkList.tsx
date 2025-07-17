@@ -830,22 +830,6 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                         src={getQRCodeUrl(qrCodeModal.link.qr_code_path)}
                         alt="QR Code"
                         className="w-48 h-48 mx-auto"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none'
-                          const parent = (e.target as HTMLImageElement).parentElement
-                          if (parent) {
-                            parent.innerHTML = `
-                              <div class="w-48 h-48 bg-gray-100 dark:bg-gray-700 rounded border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center">
-                                <div class="text-center">
-                                  <svg class="h-12 w-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                  </svg>
-                                  <p class="text-sm text-gray-500 dark:text-gray-400">QR code not available</p>
-                                </div>
-                              </div>
-                            `
-                          }
-                        }}
                       />
                     ) : (
                       <div className="w-48 h-48 bg-gray-100 dark:bg-gray-700 rounded border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center">
@@ -889,6 +873,43 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                     >
                       <Share2 className="h-4 w-4" />
                       <span>Share</span>
+                    </button>
+                  </div>
+                )}
+                
+                {/* Generate QR Code if not available */}
+                {!qrCodeModal.link.qr_code_path && (
+                  <div className="text-center">
+                    <button
+                      onClick={async () => {
+                        try {
+                          const code = qrCodeModal.link!.custom_slug || qrCodeModal.link!.short_code
+                          const shortUrl = `${window.location.origin}/${code}`
+                          
+                          // Generate QR code using the same logic as shorten-url function
+                          const { data, error } = await supabase.functions.invoke('generate-qr-code', {
+                            body: { 
+                              url_id: qrCodeModal.link!.id,
+                              short_url: shortUrl 
+                            }
+                          })
+                          
+                          if (error) throw error
+                          
+                          // Update the link with the new QR code path
+                          const updatedLink = { ...qrCodeModal.link!, qr_code_path: data.qr_code_path }
+                          setQrCodeModal({ ...qrCodeModal, link: updatedLink })
+                          
+                          // Refresh the links list
+                          refetchStats()
+                        } catch (error) {
+                          console.error('Failed to generate QR code:', error)
+                          alert('Failed to generate QR code. Please try again.')
+                        }
+                      }}
+                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                    >
+                      Generate QR Code
                     </button>
                   </div>
                 )}
