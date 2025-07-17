@@ -1,6 +1,7 @@
 // --- VERSIÓN FINAL Y COMPLETA: /functions/shorten-url/index.ts ---
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import QRCode from 'https://esm.sh/qrcode@1.5.3'
 
 // Define CORS headers para la comunicación entre dominios
 const corsHeaders = {
@@ -102,15 +103,24 @@ Deno.serve(async (req) => {
     }
 
     // Inserta el nuevo registro en la base de datos
+    const insertData: any = {
+      user_id: user?.id || null, // Will be null for anonymous users
+      long_url,
+      short_code: final_short_code,   // Se guarda el código aleatorio (o null si es slug)
+      custom_slug: final_custom_slug, // Se guarda el slug personalizado (o null si es aleatorio)
+      is_verified: is_verified || false, // Se guarda el estado de verificación
+    }
+
+    // Set expiration for anonymous users (7 days from now)
+    if (!user) {
+      const expirationDate = new Date()
+      expirationDate.setDate(expirationDate.getDate() + 7)
+      insertData.expires_at = expirationDate.toISOString()
+    }
+
     const { data: newUrl, error: insertError } = await supabase
       .from('urls')
-      .insert({
-        user_id: user?.id || null, // Will be null for anonymous users
-        long_url,
-        short_code: final_short_code,   // Se guarda el código aleatorio (o null si es slug)
-        custom_slug: final_custom_slug, // Se guarda el slug personalizado (o null si es aleatorio)
-        is_verified: is_verified || false, // Se guarda el estado de verificación
-      })
+      .insert(insertData)
       .select()
       .single()
 
@@ -122,10 +132,50 @@ Deno.serve(async (req) => {
     // Construye la URL final usando la variable de entorno
     const appUrl = Deno.env.get('VITE_APP_URL') || 'https://urlz.lat';
     const displayCode = newUrl.custom_slug || newUrl.short_code;
+    const shortUrl = `${appUrl}/${displayCode}`;
+
+    // Generate QR code for logged-in users
+    if (user) {
+      try {
+        // Generate QR code as data URL
+        const qrCodeDataUrl = await QRCode.toDataURL(shortUrl, {
+          width: 256,
+          margin: 2,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF'
+          }
+        })
+
+        // Convert data URL to blob
+        const base64Data = qrCodeDataUrl.split(',')[1]
+        const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0))
+
+        // Upload to Supabase Storage
+        const fileName = `${newUrl.id}.png`
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('qrcodes')
+          .upload(fileName, binaryData, {
+            contentType: 'image/png',
+            upsert: true
+          })
+
+        if (!uploadError && uploadData) {
+          // Update the URL record with QR code path
+          await supabase
+            .from('urls')
+            .update({ qr_code_path: uploadData.path })
+            .eq('id', newUrl.id)
+        }
+      } catch (qrError) {
+        console.error('QR code generation failed:', qrError)
+        // Don't fail the main request if QR generation fails
+      }
+    }
 
     // Devuelve una respuesta exitosa con la nueva URL corta
     return new Response(
-      JSON.stringify({ short_url: `${appUrl}/${displayCode}` }),
+      JSON.stringify({ short_url: shortUrl }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,

@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { GlobeDemo } from '../components/ui/globe-demo'
-import { Link2, Zap, Shield, BarChart3, ArrowRight, Copy, Check, X } from 'lucide-react'
+import { Link2, Zap, Shield, BarChart3, ArrowRight, Copy, Check, X, Crown, Eye, Smartphone, QrCode } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import QRCodeReact from 'qrcode.react'
 
 export function Home() {
   const { user } = useAuth()
@@ -13,6 +14,7 @@ export function Home() {
   const [shortUrl, setShortUrl] = useState('')
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [qrUrl, setQrUrl] = useState('')
 
   const handleAnonymousShorten = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,63 +59,52 @@ export function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Hero Section */}
+      {/* Section 1: Hero Form */}
       <div className="relative min-h-screen flex items-center justify-center">
         {/* Full-width Globe Background */}
         <div className="absolute inset-0 w-full h-full">
           <GlobeDemo />
         </div>
         
-        {/* Text content on top of globe */}
+        {/* Hero content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div>
-            <div className="flex justify-center lg:justify-start mb-8">
-              <div className="p-4 bg-blue-100 dark:bg-blue-900 rounded-full">
-                <Link2 className="h-16 w-16 text-blue-600 dark:text-blue-400" />
-              </div>
-            </div>
-          
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6">
-              Smarter Link Management
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white mb-8">
+              Short links,
               <br />
-              <span className="text-blue-600">Starts Here</span>
+              <span className="text-blue-600">big results.</span>
             </h1>
           
-            <p className="text-lg sm:text-xl text-gray-200 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-              Create short, branded links that boost your brand and improve performance effortlessly.
-              Track clicks and get the insights you need to grow.
+            <p className="text-xl sm:text-2xl text-gray-200 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
+              Create powerful short links that drive engagement and deliver insights.
             </p>
 
             {/* Anonymous URL Shortening Form */}
             {!user && (
               <div className="max-w-2xl mx-auto mb-8">
-                <div className="bg-white/10 dark:bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-white/20 dark:border-gray-700/20">
-                  <h3 className="text-xl font-semibold text-white mb-4 text-center">
-                    Try it now - No signup required!
-                  </h3>
-                  
-                  <form onSubmit={handleAnonymousShorten} className="space-y-4">
-                    <div className="flex flex-col sm:flex-row gap-3">
+                <div className="bg-white/10 dark:bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 border border-white/20 dark:border-gray-700/20">
+                  <form onSubmit={handleAnonymousShorten} className="space-y-6">
+                    <div className="flex flex-col sm:flex-row gap-4">
                       <div className="flex-1">
                         <input
                           type="url"
                           value={longUrl}
                           onChange={(e) => setLongUrl(e.target.value)}
                           placeholder="https://example.com/your-long-url"
-                          className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          className="w-full px-6 py-4 text-lg text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                           required
                         />
                       </div>
                       <button
                         type="submit"
                         disabled={isLoading || !longUrl.trim()}
-                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors flex items-center justify-center space-x-2 whitespace-nowrap"
+                        className="px-8 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold text-lg rounded-lg transition-colors flex items-center justify-center space-x-2 whitespace-nowrap"
                       >
                         {isLoading ? (
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                         ) : (
                           <>
-                            <Link2 className="h-4 w-4" />
+                            <Link2 className="h-5 w-5" />
                             <span>Shorten URL</span>
                           </>
                         )}
@@ -122,7 +113,7 @@ export function Home() {
                   </form>
 
                   {error && (
-                    <div className="mt-4 bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-3 rounded-lg flex justify-between items-start">
+                    <div className="mt-6 bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-4 rounded-lg flex justify-between items-start">
                       <span className="text-sm">{error}</span>
                       <button 
                         onClick={() => setError(null)} 
@@ -135,136 +126,233 @@ export function Home() {
                   )}
 
                   {shortUrl && (
-                    <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                      <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
+                    <div className="mt-6 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                      <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-3">
                         Your shortened URL:
                       </p>
-                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-                        <code className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white break-all">
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
+                        <code className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-4 py-3 text-gray-900 dark:text-white break-all">
                           {shortUrl}
                         </code>
                         <button
                           onClick={copyToClipboard}
-                          className="flex items-center justify-center space-x-1 px-3 py-2 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 bg-white dark:bg-gray-700 border border-green-200 dark:border-green-600 rounded transition-colors whitespace-nowrap"
+                          className="flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 bg-white dark:bg-gray-700 border border-green-200 dark:border-green-600 rounded transition-colors whitespace-nowrap"
                         >
                           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                           <span>{copied ? 'Copied!' : 'Copy'}</span>
                         </button>
                       </div>
-                      <div className="mt-3 text-center">
+                      <div className="mt-4 text-center">
+                        <p className="text-xs text-green-700 dark:text-green-300 mb-2">
+                          ⏰ Anonymous links expire in 7 days. Create a free account for permanent links.
+                        </p>
                         <Link
                           to="/login"
                           className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
                         >
-                          Sign up for free to track clicks and create custom links →
+                          Create Free Account →
                         </Link>
                       </div>
                     </div>
                   )}
+
+                  <p className="mt-4 text-sm text-gray-300 dark:text-gray-400 text-center">
+                    Anonymous links expire in 7 days. Create a free account for permanent links.
+                  </p>
                 </div>
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {user ? (
+            {user && (
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/dashboard"
-                  className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors space-x-2"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg rounded-lg transition-colors space-x-2"
                 >
                   <span>Go to Dashboard</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-5 w-5" />
                 </Link>
-              ) : (
-                <>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Section 2: Why Sign Up? Value Proposition */}
+      <div className="bg-white dark:bg-gray-900 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+              Why Create an Account?
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Unlock powerful features and insights with a free urlz.lat account
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* Track Everything */}
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full mb-6">
+                <BarChart3 className="h-10 w-10" />
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                Track Everything
+              </h3>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                Get detailed analytics on every click. See where your audience comes from, what devices they use, and when they're most active.
+              </p>
+            </div>
+
+            {/* Brand Your Links */}
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 rounded-full mb-6">
+                <Eye className="h-10 w-10" />
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                Brand Your Links
+              </h3>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                Create custom, memorable links that reflect your brand. Build trust and recognition with every share.
+              </p>
+            </div>
+
+            {/* Manage with Ease */}
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full mb-6">
+                <Smartphone className="h-10 w-10" />
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                Manage with Ease
+              </h3>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                Organize all your links in one dashboard. Edit, delete, and monitor performance from anywhere.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              to="/login"
+              className="inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg rounded-lg transition-colors space-x-2"
+            >
+              <span>Create Free Account</span>
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 3: Go Pro Upsell */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-8">
+            Take Your Links to the Next Level with Pro
+          </h2>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 border border-white/20">
+                <Crown className="h-8 w-8 text-yellow-300 mb-4 mx-auto" />
+                <h3 className="text-xl font-semibold text-white mb-2">Custom Domains</h3>
+                <p className="text-blue-100">Use your own domain for maximum brand recognition</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 border border-white/20">
+                <QrCode className="h-8 w-8 text-yellow-300 mb-4 mx-auto" />
+                <h3 className="text-xl font-semibold text-white mb-2">QR with Logo</h3>
+                <p className="text-blue-100">Generate branded QR codes with your company logo</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 border border-white/20 md:col-span-2 lg:col-span-1">
+                <BarChart3 className="h-8 w-8 text-yellow-300 mb-4 mx-auto" />
+                <h3 className="text-xl font-semibold text-white mb-2">Advanced Analytics</h3>
+                <p className="text-blue-100">Deep insights with conversion tracking and A/B testing</p>
+              </div>
+            </div>
+
+            <Link
+              to="/features"
+              className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold text-lg rounded-lg hover:bg-gray-50 transition-colors space-x-2"
+            >
+              <span>View Pro Plans</span>
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 4: Instant QR Code Generator */}
+      <div className="bg-gray-50 dark:bg-gray-800 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+              Instant QR Code Generator
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Generate QR codes instantly for any URL. Perfect for print materials, presentations, and offline marketing.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <label htmlFor="qr-url" className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
+                    Enter any URL to generate a QR code:
+                  </label>
+                  <input
+                    type="url"
+                    id="qr-url"
+                    value={qrUrl}
+                    onChange={(e) => setQrUrl(e.target.value)}
+                    placeholder="https://example.com"
+                    className="w-full px-4 py-3 text-lg border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
+                  />
+                  <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                    The QR code updates automatically as you type
+                  </p>
+                </div>
+                
+                <div className="flex justify-center">
+                  <div className="bg-white p-6 rounded-lg shadow-inner">
+                    {qrUrl ? (
+                      <QRCodeReact
+                        value={qrUrl}
+                        size={200}
+                        level="M"
+                        includeMargin={true}
+                        className="border border-gray-200 rounded"
+                      />
+                    ) : (
+                      <div className="w-[200px] h-[200px] bg-gray-100 dark:bg-gray-700 rounded border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                        <div className="text-center">
+                          <QrCode className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            QR code will appear here
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              {qrUrl && (
+                <div className="mt-8 text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    Want to save this QR code and track its performance?
+                  </p>
                   <Link
                     to="/login"
-                    className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors space-x-2"
+                    className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors space-x-2"
                   >
-                    <span>Get Started</span>
+                    <span>Create Free Account</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <Link
-                    to="/login"
-                    className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 font-semibold rounded-lg transition-colors"
-                  >
-                    Try Free Trial
-                  </Link>
-                </>
+                </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 relative z-10">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Tools That Make Every Click Count
-          </h2>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Discover how our features simplify link management and maximize performance.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full mb-6">
-              <Zap className="h-8 w-8" />
-            </div>
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Lightning Fast
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Generate short links instantly with our optimized infrastructure and global CDN.
-            </p>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full mb-6">
-              <BarChart3 className="h-8 w-8" />
-            </div>
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Real-Time Analytics
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Track click performance, analyze audience behavior and optimize your strategy.
-            </p>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 rounded-full mb-6">
-              <Shield className="h-8 w-8" />
-            </div>
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Secure & Reliable
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Enterprise-grade security with 99.9% uptime guarantee and fraud protection.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className="bg-blue-600 dark:bg-blue-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <div className="text-center">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">
-              Be First to Experience Smarter Link Management
-            </h2>
-            <p className="text-lg sm:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join the next evolution website and security analysis, quality and security solutions, and more.
-            </p>
-            {!user && (
-              <Link
-                to="/login"
-                className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors space-x-2"
-              >
-                <span>Get Started Free</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            )}
           </div>
         </div>
       </div>

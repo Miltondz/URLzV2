@@ -33,13 +33,24 @@ Deno.serve(async (req) => {
     // Busca el enlace en la base de datos por short_code O custom_slug
     const { data: urlRecord, error } = await supabaseAdmin
       .from('urls')
-      .select('id, long_url')
+      .select('id, long_url, expires_at')
       .or(`short_code.eq.${code},custom_slug.eq.${code}`)
       .single();
 
     if (error) {
       console.error(`Database error for code [${code}]:`, error);
       return new Response('URL not found', { status: 404 });
+    }
+
+    // Check if the link has expired
+    if (urlRecord.expires_at) {
+      const expirationDate = new Date(urlRecord.expires_at)
+      const now = new Date()
+      
+      if (now > expirationDate) {
+        console.log(`Link ${code} has expired at ${expirationDate}`)
+        return new Response('URL has expired', { status: 404 });
+      }
     }
 
     // --- LÓGICA DE ANALÍTICA ASÍNCRONA ---
