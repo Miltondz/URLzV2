@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { GlobeDemo } from '../components/ui/globe-demo'
 import { Link2, Zap, Shield, BarChart3, ArrowRight, Copy, Check, X, Crown, Eye, Smartphone, QrCode } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import QRCodeReact from 'qrcode.react'
+import { QRCodeSVG } from 'qrcode.react'
 
 export function Home() {
   const { user } = useAuth()
@@ -317,7 +317,7 @@ export function Home() {
                 <div className="flex justify-center">
                   <div className="bg-white p-6 rounded-lg shadow-inner">
                     {qrUrl ? (
-                      <QRCodeReact
+                      <QRCodeSVG
                         value={qrUrl}
                         size={200}
                         level="M"
