@@ -39,9 +39,6 @@ export function About() {
                   alt="Ivan Weiss - Founder"
                   className="w-48 h-48 rounded-full object-cover mx-auto shadow-lg"
                 />
-                <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">IW</span>
-                </div>
               </div>
             </div>
 
@@ -58,7 +55,7 @@ export function About() {
                     Milton Diaz
                   </h3>
                   <p className="text-blue-600 dark:text-blue-400 font-medium mb-3">
-                    Founder & CEO at urlz.lat
+                    at DunaTech, creator of Urlz.lat
                   </p>
                 </div>
 
