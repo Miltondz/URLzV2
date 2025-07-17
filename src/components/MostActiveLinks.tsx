@@ -36,7 +36,7 @@ export function MostActiveLinks({ links }: MostActiveLinksProps) {
           {links.map((link, index) => {
             const code = link.custom_slug || link.short_code
             const shortUrl = `urlz.lat/r/${code}`
-            const fullShortUrl = `${window.location.origin}/r/${code}`
+            const fullShortUrl = `${window.location.origin}/${code}`
             
             return (
               <div key={link.id} className="flex-shrink-0 w-full sm:w-64 bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
