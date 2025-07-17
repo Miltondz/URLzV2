@@ -12,7 +12,7 @@ export function Home() {
   const { user } = useAuth()
   const [longUrl, setLongUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [shortUrl, setShortUrl] = useState('')
+  const [newLink, setNewLink] = useState(null)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isVerified, setIsVerified] = useState<boolean | null>(null)
@@ -25,7 +25,7 @@ export function Home() {
 
     setIsLoading(true)
     setError(null)
-    setShortUrl('')
+    setNewLink(null)
     setIsVerified(null)
     
     try {
@@ -41,7 +41,7 @@ export function Home() {
         throw error
       }
 
-      setShortUrl(data.short_url)
+      setNewLink(data)
       setIsVerified(data.is_verified)
       setLongUrl('') // Clear the input
     } catch (error) {
@@ -54,7 +54,7 @@ export function Home() {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(shortUrl)
+      await navigator.clipboard.writeText(newLink?.short_url || '')
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
@@ -158,14 +158,14 @@ export function Home() {
                     </div>
                   )}
 
-                  {shortUrl && (
+                  {newLink && (
                     <div className="mt-6 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                       <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-3">
                         Your shortened URL:
                       </p>
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
                         <code className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-4 py-3 text-gray-900 dark:text-white break-all">
-                          {shortUrl}
+                          {newLink.short_url}
                         </code>
                         {isVerified && (
                           <div className="flex items-center space-x-1 px-3 py-2 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded text-green-700 dark:text-green-300 text-sm font-medium whitespace-nowrap">
