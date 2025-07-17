@@ -34,31 +34,41 @@ Deno.serve(async (req)=>{
         }
       }
     });
-    // Intenta obtener el usuario (puede ser null para usuarios anónimos)
+
+    // Get user (can be null for anonymous users)
     const { data: { user }, error: authError } = await supabase.auth.getUser();
-    // Note: authError is expected for anonymous requests, so we don't throw here
-    // Obtiene los datos del cuerpo de la petición
+    
+    // Get request body data
     const { long_url, custom_slug, is_verified } = await req.json();
-    // Valida que la URL larga exista y tenga un formato válido
+
+    // --- CORRECTED VALIDATION ORDER ---
+    
+    // VALIDATION #1: A valid URL is always required
     if (!long_url || !/^https?:\/\//.test(long_url)) {
       throw new Error('A valid URL is required.');
     }
+
+    // VALIDATION #2: If a custom_slug exists, a user MUST exist
+    // This prevents anonymous users from proceeding with custom slugs
+    if (custom_slug && !user) {
+      return new Response(JSON.stringify({
+        error: 'You must be logged in to create custom slugs.'
+      }), {
+        status: 401,
+        headers: corsHeaders
+      });
+    }
+
     let final_short_code = null;
     let final_custom_slug = null;
-    // Lógica de negocio para los SLUGS PERSONALIZADOS (Función Pro)
+
+    // Business logic for CUSTOM SLUGS (Pro feature)
+    // Now, if we proceed with a custom_slug, we KNOW a 'user' object exists
     if (custom_slug) {
-      // Custom slugs require authentication
-      if (!user) {
-        return new Response(JSON.stringify({
-          error: 'You must be logged in to create custom slugs.'
-        }), {
-          status: 401,
-          headers: corsHeaders
-        });
-      }
       final_custom_slug = custom_slug;
-      // 1. Revisa el plan de suscripción del usuario
-      const { data: profile } = await supabase.from('profiles').select('subscription_tier').single();
+
+      // VALIDATION #3: Check the user's subscription plan
+      const { data: profile } = await supabase.from('profiles').select('subscription_tier').eq('id', user.id).single();
       if (profile?.subscription_tier === 'free') {
         return new Response(JSON.stringify({
           error: 'Custom slugs are a Pro feature.'
@@ -67,17 +77,19 @@ Deno.serve(async (req)=>{
           headers: corsHeaders
         });
       }
-      // 2. Valida el formato del slug
+
+      // Validate slug format
       if (!/^[a-zA-Z0-9_-]+$/.test(custom_slug)) {
         throw new Error('Custom slug contains invalid characters.');
       }
-      // 3. Revisa si el slug ya está en uso en CUALQUIERA de las dos columnas
+
+      // Check if slug is already in use in EITHER column
       const { data: existing } = await supabase.from('urls').select('id').or(`short_code.eq.${custom_slug},custom_slug.eq.${custom_slug}`).single();
       if (existing) {
         throw new Error('This custom slug is already taken.');
       }
     } else {
-      // Lógica para generar un CÓDIGO CORTO ALEATORIO y único
+      // Logic for generating a random and unique SHORT CODE
       let attempts = 0;
       const maxAttempts = 10;
       while(attempts < maxAttempts){
@@ -85,7 +97,7 @@ Deno.serve(async (req)=>{
         const { data: existing } = await supabase.from('urls').select('id').eq('short_code', tempCode).single();
         if (!existing) {
           final_short_code = tempCode;
-          break; // Encontramos un código único
+          break; // Found a unique code
         }
         attempts++;
       }
@@ -93,7 +105,8 @@ Deno.serve(async (req)=>{
         throw new Error('Failed to generate a unique short code. Please try again.');
       }
     }
-    // Inserta el nuevo registro en la base de datos
+
+    // Insert the new record into the database
     const insertData = {
       user_id: user?.id || null,
       long_url,
@@ -109,13 +122,13 @@ Deno.serve(async (req)=>{
     }
     const { data: newUrl, error: insertError } = await supabase.from('urls').insert(insertData).select().single();
     if (insertError) {
-      // Si hay un error de inserción (ej: el slug ya fue tomado por otro usuario), lo lanzamos
+      // If there's an insertion error (e.g., slug was taken by another user), throw it
       throw insertError;
     }
-    // Construye la URL final usando la variable de entorno
+    // Build the final URL using environment variable
     const appUrl = Deno.env.get('VITE_APP_URL') || 'https://urlz.lat';
     const displayCode = newUrl.custom_slug || newUrl.short_code;
-    const shortUrl = `${appUrl}/${displayCode}`;
+    const shortUrl = `${appUrl}/r/${displayCode}`;
     // Generate QR code for logged-in users
     if (user) {
       try {
@@ -148,7 +161,7 @@ Deno.serve(async (req)=>{
       // Don't fail the main request if QR generation fails
       }
     }
-    // Devuelve una respuesta exitosa con la nueva URL corta
+    // Return successful response with the new short URL
     return new Response(JSON.stringify({
       short_url: shortUrl
     }), {
@@ -159,7 +172,7 @@ Deno.serve(async (req)=>{
       status: 200
     });
   } catch (error) {
-    // Manejador de errores general
+    // General error handler
     return new Response(JSON.stringify({
       error: error.message
     }), {
