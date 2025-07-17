@@ -399,10 +399,22 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                         Short Code
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[80px]">
-                        Clicks
+                        <button
+                          onClick={() => handleSort('clicks')}
+                          className="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100 transition-colors"
+                        >
+                          <span>Clicks</span>
+                          {getSortIcon('clicks')}
+                        </button>
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px]">
-                        Created
+                        <button
+                          onClick={() => handleSort('created_at')}
+                          className="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100 transition-colors"
+                        >
+                          <span>Created</span>
+                          {getSortIcon('created_at')}
+                        </button>
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[100px]">
                         Actions
