@@ -113,6 +113,12 @@ export function Dashboard() {
     fetchAllData()
   }
 
+  // Add new link with fade-in animation
+  const handleNewLink = (newLink: any) => {
+    setAllLinks(prevLinks => [newLink, ...prevLinks])
+    refetchData()
+  }
+
   useEffect(() => {
     fetchAllData()
   }, [])
@@ -250,46 +256,64 @@ export function Dashboard() {
         {/* 1. Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Total Links Card - Blue */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 border-t-4 border-t-blue-500">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 border-t-4 border-t-blue-500 transition-all duration-300">
             <div className="flex items-center">
               <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
                 <Link2 className="h-6 w-6 text-blue-500" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Links</p>
-                <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                  {stats?.totalLinks?.toLocaleString() ?? '0'}
-                </p>
+                {loading ? (
+                  <div className="animate-pulse">
+                    <div className="h-6 sm:h-8 bg-gray-200 dark:bg-gray-700 rounded w-16 mt-1"></div>
+                  </div>
+                ) : (
+                  <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+                    {stats?.totalLinks?.toLocaleString() ?? '0'}
+                  </p>
+                )}
               </div>
             </div>
           </div>
 
           {/* Total Clicks Card - Green */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 border-t-4 border-t-green-500">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 border-t-4 border-t-green-500 transition-all duration-300">
             <div className="flex items-center">
               <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
                 <BarChart3 className="h-6 w-6 text-green-500" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Clicks</p>
-                <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                  {stats?.totalClicks?.toLocaleString() ?? '0'}
-                </p>
+                {loading ? (
+                  <div className="animate-pulse">
+                    <div className="h-6 sm:h-8 bg-gray-200 dark:bg-gray-700 rounded w-16 mt-1"></div>
+                  </div>
+                ) : (
+                  <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+                    {stats?.totalClicks?.toLocaleString() ?? '0'}
+                  </p>
+                )}
               </div>
             </div>
           </div>
 
           {/* Avg Clicks Card - Indigo */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 border-t-4 border-t-indigo-500 sm:col-span-2 lg:col-span-1">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 border-t-4 border-t-indigo-500 sm:col-span-2 lg:col-span-1 transition-all duration-300">
             <div className="flex items-center">
               <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
                 <TrendingUp className="h-6 w-6 text-indigo-500" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Clicks</p>
-                <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                  {stats?.avgClicks?.toFixed(1) ?? '0.0'}
-                </p>
+                {loading ? (
+                  <div className="animate-pulse">
+                    <div className="h-6 sm:h-8 bg-gray-200 dark:bg-gray-700 rounded w-16 mt-1"></div>
+                  </div>
+                ) : (
+                  <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+                    {stats?.avgClicks?.toFixed(1) ?? '0.0'}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -297,7 +321,7 @@ export function Dashboard() {
 
         {/* 2. Shortener Form - Full Width */}
         <div className="mb-6 sm:mb-8">
-          <ShortenerForm onSuccess={refetchData} refetchStats={refetchData} />
+          <ShortenerForm onSuccess={handleNewLink} refetchStats={refetchData} />
         </div>
 
         {/* 3. Most Active Links - Full Width */}

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ExternalLink, BarChart3, Calendar, Copy, Trash2, Eye, Shield } from 'lucide-react'
+import { ExternalLink, BarChart3, Calendar, Copy, Trash2, Eye, Shield, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { ConfirmDialog } from './ConfirmDialog'
 import { LinkPreviewModal } from './LinkPreviewModal'
 import { supabase } from '../lib/supabase'
@@ -20,10 +20,15 @@ interface LinkListProps {
   refetchStats: () => void
 }
 
+const ITEMS_PER_PAGE = 10
+
 export function LinkList({ links, refetchStats }: LinkListProps) {
   const [localLinks, setLocalLinks] = useState<LinkData[]>(links)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
   const [previewModal, setPreviewModal] = useState<{
     isOpen: boolean
     url: string
@@ -46,6 +51,28 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
     setLocalLinks(links)
     setIsLoading(false)
   }, [links])
+
+  // Filter links based on search term
+  const filteredLinks = useMemo(() => {
+    if (!searchTerm.trim()) return localLinks
+    
+    const term = searchTerm.toLowerCase()
+    return localLinks.filter(link => 
+      link.long_url.toLowerCase().includes(term) ||
+      (link.short_code && link.short_code.toLowerCase().includes(term)) ||
+      (link.custom_slug && link.custom_slug.toLowerCase().includes(term))
+    )
+  }, [localLinks, searchTerm])
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredLinks.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const paginatedLinks = filteredLinks.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
+  // Reset to first page when search changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm])
 
   const copyToClipboard = async (shortCode: string) => {
     try {
@@ -89,6 +116,9 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
     const { linkId } = deleteDialog
     setDeletingId(linkId)
     
+    // Add fade-out animation
+    setAnimatingItems(prev => new Set(prev).add(linkId))
+    
     try {
       const { error } = await supabase
         .from('urls')
@@ -97,13 +127,26 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
 
       if (error) throw error
       
-      // Remove the link from the local state
-      setLocalLinks(localLinks.filter(link => link.id !== linkId))
-      closeDeleteDialog()
-      refetchStats() // Update stats after successful deletion
+      // Wait for animation to complete before removing
+      setTimeout(() => {
+        setLocalLinks(localLinks.filter(link => link.id !== linkId))
+        setAnimatingItems(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(linkId)
+          return newSet
+        })
+        closeDeleteDialog()
+        refetchStats()
+      }, 300)
+      
     } catch (error) {
       console.error('Error deleting link:', error)
       alert('Failed to delete link. Please try again.')
+      setAnimatingItems(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(linkId)
+        return newSet
+      })
     } finally {
       setDeletingId(null)
     }
@@ -115,6 +158,88 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
       day: 'numeric',
       year: 'numeric'
     })
+  }
+
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)))
+  }
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null
+
+    const pages = []
+    const showPages = 5
+    let startPage = Math.max(1, currentPage - Math.floor(showPages / 2))
+    let endPage = Math.min(totalPages, startPage + showPages - 1)
+    
+    if (endPage - startPage + 1 < showPages) {
+      startPage = Math.max(1, endPage - showPages + 1)
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i)
+    }
+
+    return (
+      <div className="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 sm:px-6">
+        <div className="flex justify-between flex-1 sm:hidden">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="relative ml-3 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
+          >
+            Next
+          </button>
+        </div>
+        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              Showing <span className="font-medium">{startIndex + 1}</span> to{' '}
+              <span className="font-medium">{Math.min(startIndex + ITEMS_PER_PAGE, filteredLinks.length)}</span> of{' '}
+              <span className="font-medium">{filteredLinks.length}</span> results
+            </p>
+          </div>
+          <div>
+            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+              <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              {pages.map((page) => (
+                <button
+                  key={page}
+                  onClick={() => goToPage(page)}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                    page === currentPage
+                      ? 'z-10 bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900 dark:border-blue-400 dark:text-blue-300'
+                      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+              <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (isLoading) {
@@ -135,13 +260,30 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
   return (
     <>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
             Your Links
           </h2>
           <span className="text-sm text-gray-500 dark:text-gray-400">
-            {localLinks.length} {localLinks.length === 1 ? 'link' : 'links'}
+            {filteredLinks.length} {filteredLinks.length === 1 ? 'link' : 'links'}
+            {searchTerm && ` (filtered from ${localLinks.length})`}
           </span>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search links by URL, short code, or custom slug..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
+            />
+          </div>
         </div>
 
         {/* Error Message */}
@@ -158,15 +300,35 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
           </div>
         )}
 
-        {localLinks.length === 0 ? (
+        {filteredLinks.length === 0 ? (
           <div className="text-center py-12">
-            <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              No links yet
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400">
-              Create your first shortened URL to get started.
-            </p>
+            {searchTerm ? (
+              <>
+                <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  No links found
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">
+                  No links match your search for "{searchTerm}"
+                </p>
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                >
+                  Clear search
+                </button>
+              </>
+            ) : (
+              <>
+                <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  No links yet
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400">
+                  Create your first shortened URL to get started.
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <div className="overflow-hidden">
@@ -194,8 +356,13 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                     </tr>
                   </thead>
                   <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    {localLinks.map((link) => (
-                      <tr key={link.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    {paginatedLinks.map((link) => (
+                      <tr 
+                        key={link.id} 
+                        className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ${
+                          animatingItems.has(link.id) ? 'opacity-0 transform scale-95' : 'opacity-100 transform scale-100'
+                        }`}
+                      >
                         {(() => {
                           const code = link.custom_slug || link.short_code
                           
@@ -291,8 +458,13 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
 
             {/* Mobile view */}
             <div className="lg:hidden space-y-4">
-              {localLinks.map((link) => (
-                <div key={link.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+              {paginatedLinks.map((link) => (
+                <div 
+                  key={link.id} 
+                  className={`border border-gray-200 dark:border-gray-700 rounded-lg p-4 transition-all duration-300 ${
+                    animatingItems.has(link.id) ? 'opacity-0 transform scale-95' : 'opacity-100 transform scale-100'
+                  }`}
+                >
                   {(() => {
                     const code = link.custom_slug || link.short_code
                     
@@ -402,6 +574,9 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                 </div>
               ))}
             </div>
+
+            {/* Pagination */}
+            {renderPagination()}
           </div>
         )}
       </div>
