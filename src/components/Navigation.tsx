@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { ConfirmationModal } from './ConfirmationModal'
 import { Moon, Sun, LogOut, User, Link as LinkIcon, Settings, Menu, X, Heart } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
@@ -17,19 +18,18 @@ export function Navigation() {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false)
 
   const handleDonation = () => {
-    const confirmed = window.confirm(
-      '¿Deseas apoyar el desarrollo de urlz.lat con una donación? Serás redirigido a Flow para completar el pago.'
+    setIsDonationModalOpen(true)
+  }
+
+  const handleConfirmDonation = () => {
+    window.open(
+      'https://www.flow.cl/btn.php?token=qc174558592341e6cf3d88f836f698152805f777',
+      '_blank',
+      'noopener,noreferrer'
     )
-    
-    if (confirmed) {
-      window.open(
-        'https://www.flow.cl/btn.php?token=qc174558592341e6cf3d88f836f698152805f777',
-        '_blank',
-        'noopener,noreferrer'
-      )
-    }
   }
 
   const handleLogout = async () => {
@@ -255,6 +255,18 @@ export function Navigation() {
           </div>
         </div>
       )}
+
+      {/* Donation Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isDonationModalOpen}
+        onClose={() => setIsDonationModalOpen(false)}
+        onConfirm={handleConfirmDonation}
+        title="Apoyar a urlz.lat"
+        message="¿Deseas apoyar el desarrollo con una donación? Serás redirigido a Flow para completar el pago de forma segura."
+        icon={Heart}
+        confirmText="Aceptar"
+        cancelText="Cancelar"
+      />
     </nav>
   )
 }
