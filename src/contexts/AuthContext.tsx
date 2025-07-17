@@ -37,23 +37,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signOut = async () => {
+    setLoading(true)
     try {
+      // Clear local state immediately to prevent UI issues
+      setUser(null)
+      setSession(null)
+      
+      // Call Supabase signOut
       const { error } = await supabase.auth.signOut()
       if (error) {
         console.error('Supabase signOut error:', error)
-        throw error
+        // Don't throw error - we've already cleared local state
       }
       
-      // Clear any local storage or session data if needed
-      localStorage.removeItem('supabase.auth.token')
-      sessionStorage.clear()
+      // Clear any remaining local storage data
+      try {
+        localStorage.removeItem('supabase.auth.token')
+        localStorage.removeItem('sb-' + Deno.env.get('VITE_SUPABASE_URL')?.split('//')[1]?.split('.')[0] + '-auth-token')
+        sessionStorage.clear()
+      } catch (storageError) {
+        console.warn('Error clearing storage:', storageError)
+      }
       
     } catch (error) {
       console.error('Error during sign out:', error)
-      // Even if there's an error, we should clear the local state
-      setUser(null)
-      setSession(null)
-      throw error
+      // State is already cleared, so logout is still effective
+    } finally {
+      setLoading(false)
     }
   }
 

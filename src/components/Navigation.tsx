@@ -16,6 +16,24 @@ export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return // Prevent multiple logout attempts
+    
+    setIsLoggingOut(true)
+    try {
+      await signOut()
+      // Force a complete page reload to ensure clean state
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Force redirect even if there's an error
+      window.location.href = '/'
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -132,19 +150,22 @@ export function Navigation() {
                     <button
                       onClick={() => {
                         setIsDropdownOpen(false)
-                        signOut().then(() => {
-                          // Force redirect to home page after logout
-                          window.location.href = '/'
-                        }).catch((error) => {
-                          console.error('Logout error:', error)
-                          // Still redirect even if there's an error
-                          window.location.href = '/'
-                        })
+                        handleLogout()
                       }}
-                      className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors"
+                      disabled={isLoggingOut}
+                      className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      <LogOut className="h-4 w-4" />
-                      <span>{t('nav.logout')}</span>
+                      {isLoggingOut ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                          <span>Logging out...</span>
+                        </>
+                      ) : (
+                        <>
+                          <LogOut className="h-4 w-4" />
+                          <span>{t('nav.logout')}</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 )}
