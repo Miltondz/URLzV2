@@ -6,6 +6,7 @@ import { GlobeDemo } from '../components/ui/globe-demo'
 import { QRCodeGenerator } from '../components/QRCodeGenerator'
 import { Link2, Zap, Shield, BarChart3, ArrowRight, Copy, Check, X, Crown, Eye, Smartphone, QrCode } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { QRCodeSVG } from 'qrcode.react'
 
 export function Home() {
   const { user } = useAuth()
@@ -14,8 +15,8 @@ export function Home() {
   const [shortUrl, setShortUrl] = useState('')
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [qrUrl, setQrUrl] = useState('')
   const [pasteLoading, setPasteLoading] = useState(false)
+  const [qrUrl, setQrUrl] = useState('')
 
   const handleAnonymousShorten = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -377,7 +378,6 @@ export function Home() {
                         </div>
                       </div>
                     )}
-                    <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
                   </div>
                 </div>
               </div>
@@ -394,26 +394,6 @@ export function Home() {
                     <span>Create Free Account</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                </div>
-              )}
-              
-              {qrUrl && (
-                <div className="flex justify-center mt-8">
-                  <QRCodeGenerator 
-                    url={qrUrl} 
-                    size={200}
-                    className="w-full max-w-xs"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
                 </div>
               )}
             </div>
