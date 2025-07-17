@@ -1,13 +1,6 @@
 import React from 'react'
 import { TrendingUp, ExternalLink, BarChart3 } from 'lucide-react'
 
-interface Link {
-  id: string
-  long_url: string
-  short_code: string | null
-  custom_slug: string | null
-  clicks: number
-}
 
 interface MostActiveLinksProps {
   links: Link[]

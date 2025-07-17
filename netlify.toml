@@ -1,5 +1,5 @@
 [[redirects]]
-from = "/r/:short_code"
+from = "/:short_code"
 to = "https://ifivanwkvtjoykpcjczc.supabase.co/functions/v1/redirect/:short_code"
 status = 302
 

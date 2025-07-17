@@ -156,7 +156,7 @@ export function AnalyticsDetailPage() {
   })).filter(item => item.lat !== 0 && item.lng !== 0)
 
   const code = urlData.custom_slug || urlData.short_code
-  const shortUrl = `${window.location.origin}/r/${code}`
+  const shortUrl = `${window.location.origin}/${code}`
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

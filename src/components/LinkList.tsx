@@ -348,7 +348,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           <BarChart3 className="h-4 w-4" />
                         </Link>
                         <button
-                          onClick={() => copyToClipboard(`${import.meta.env.VITE_APP_URL || window.location.origin}/r/${code}`)}
+                          onClick={() => copyToClipboard(`${import.meta.env.VITE_APP_URL || window.location.origin}/${code}`)}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
                           title="Copy to clipboard"
                         >
