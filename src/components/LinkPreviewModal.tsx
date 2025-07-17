@@ -20,46 +20,44 @@ export function LinkPreviewModal({ isOpen, onClose, url }: LinkPreviewModalProps
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (isOpen && url) {
-      fetchPreview()
+    // Guard clause to prevent calling the function without a URL
+    if (!url) {
+      setLoading(false)
+      setError("No URL provided to preview.")
+      return
     }
-  }, [isOpen, url])
 
-  const fetchPreview = async () => {
-    setLoading(true)
-    setError(null)
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('preview-url', {
-        body: { long_url: url }
-      })
-
-      if (error) throw error
+    const fetchPreview = async () => {
+      setLoading(true)
+      setError(null)
       
-      // Check if the response contains an error
-      if (data.error) {
-        setError('Preview not available for this link.')
+      try {
+        // Ensure the 'body' object is correctly structured
+        const { data, error } = await supabase.functions.invoke('preview-url', {
+          body: { long_url: url } // The key is 'long_url', the value is the prop
+        })
+
+        if (error) throw error
+        
+        // Check if the backend returned a specific error message
+        if (data.error) {
+          throw new Error(data.error)
+        }
+
+        setPreviewData(data)
+      } catch (err) {
+        console.error("Preview fetch failed:", err)
+        setError(err.message || "Failed to load preview.")
+        // Set fallback data
         setPreviewData({
           title: 'Preview unavailable',
           description: 'Unable to load preview for this URL',
           favicon: null
         })
-      } else {
-        setPreviewData(data)
+      } finally {
+        setLoading(false)
       }
-    } catch (error) {
-      console.error('Error fetching preview:', error)
-      setError('Preview not available for this link.')
-      // Set fallback data
-      setPreviewData({
-        title: 'Preview unavailable',
-        description: 'Unable to load preview for this URL',
-        favicon: null
-      })
-    } finally {
-      setLoading(false)
     }
-  }
 
   const handleProceed = () => {
     window.open(url, '_blank', 'noopener,noreferrer')
