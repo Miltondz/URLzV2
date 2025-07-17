@@ -59,6 +59,9 @@ export function LinkPreviewModal({ isOpen, onClose, url }: LinkPreviewModalProps
       }
     }
 
+    fetchPreview()
+  }, [url])
+
   const handleProceed = () => {
     window.open(url, '_blank', 'noopener,noreferrer')
     onClose()
