@@ -34,15 +34,51 @@ export function Dashboard() {
     setLoading(true)
     setError(null)
     try {
-      // Fetch stats
-      const { data, error } = await supabase.functions.invoke('get-dashboard-stats')
+      // Fetch stats with proper authorization headers
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        throw new Error('No active session')
+      }
+
+      const { data, error } = await supabase.functions.invoke('get-dashboard-stats', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      })
       
       if (error) {
         console.error('Stats function error:', error)
         throw new Error(error.message || 'Failed to fetch stats')
       }
       
-      setStats(data)
+      // Ensure we have valid stats data
+      if (data && typeof data === 'object') {
+        setStats({
+          totalLinks: data.total_links || 0,
+          totalClicks: data.total_clicks || 0,
+          avgClicks: data.avg_clicks || 0
+        })
+      } else {
+        // Fallback: calculate stats from links data
+        const { data: linksData, error: linksError } = await supabase
+          .from('urls')
+          .select('clicks')
+        
+        if (!linksError && linksData) {
+          const totalLinks = linksData.length
+          const totalClicks = linksData.reduce((sum, link) => sum + (link.clicks || 0), 0)
+          const avgClicks = totalLinks > 0 ? totalClicks / totalLinks : 0
+          
+          setStats({
+            totalLinks,
+            totalClicks,
+            avgClicks
+          })
+        } else {
+          throw new Error('Failed to fetch stats data')
+        }
+      }
 
       // Fetch all links
       const { data: linksData, error: linksError } = await supabase
@@ -222,7 +258,7 @@ export function Dashboard() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Links</p>
                 <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                  {stats?.totalLinks?.toLocaleString() ?? '-'}
+                  {stats?.totalLinks?.toLocaleString() ?? '0'}
                 </p>
               </div>
             </div>
@@ -237,7 +273,7 @@ export function Dashboard() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Clicks</p>
                 <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                  {stats?.totalClicks?.toLocaleString() ?? '-'}
+                  {stats?.totalClicks?.toLocaleString() ?? '0'}
                 </p>
               </div>
             </div>
@@ -252,7 +288,7 @@ export function Dashboard() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Clicks</p>
                 <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                  {stats?.avgClicks?.toFixed(1) ?? '-'}
+                  {stats?.avgClicks?.toFixed(1) ?? '0.0'}
                 </p>
               </div>
             </div>
