@@ -106,12 +106,14 @@ export function AnalyticsDetailPage() {
 
   // Prepare chart data
   const browserData = clicksData.reduce((acc, click) => {
-    acc[click.browser_name] = (acc[click.browser_name] || 0) + 1
+    const browser = click.browser_name || 'Unknown'
+    acc[browser] = (acc[browser] || 0) + 1
     return acc
   }, {} as Record<string, number>)
 
   const countryData = clicksData.reduce((acc, click) => {
-    acc[click.country] = (acc[click.country] || 0) + 1
+    const country = click.country || 'Unknown'
+    acc[country] = (acc[country] || 0) + 1
     return acc
   }, {} as Record<string, number>)
 
@@ -314,16 +316,19 @@ export function AnalyticsDetailPage() {
                     {clicksData.slice(0, 10).map((click) => (
                       <tr key={click.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                          {new Date(click.clicked_at).toLocaleString()}
+                          {new Date(click.created_at).toLocaleString()}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                          {click.city}, {click.country}
+                          {(() => {
+                            const location = [click.city, click.country].filter(Boolean).join(', ')
+                            return location || 'Unknown'
+                          })()}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                          {click.browser_name} on {click.os_name}
+                          {(click.browser_name || 'Unknown')} on {(click.os_name || 'Unknown')}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                          {click.device_type}
+                          {click.device_type || 'Unknown'}
                         </td>
                       </tr>
                     ))}
