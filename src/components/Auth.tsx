@@ -47,7 +47,7 @@ export function AuthComponent() {
               },
             }}
             providers={['google']}
-            redirectTo={`${window.location.origin}/dashboard`}
+            redirectTo="https://urlz.lat/dashboard"
             onlyThirdPartyProviders={false}
           />
         </div>
