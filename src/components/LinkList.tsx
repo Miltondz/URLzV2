@@ -322,13 +322,13 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                       </label>
                       <div className="flex items-center space-x-2 mt-1">
                         <a
-                          href={`${import.meta.env.VITE_APP_URL || window.location.origin}/${code}`}
+                          href={`${import.meta.env.VITE_APP_URL || window.location.origin}/r/${code}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-1"
                           title={`urlz.lat/r/${code}`}
                         >
-                          <span>urlz.lat/{code}</span>
+                          <span>urlz.lat/r/{code}</span>
                           {link.is_verified && (
                             <Shield className="h-3 w-3 text-green-600 dark:text-green-400 flex-shrink-0" title="Verified safe" />
                           )}
@@ -342,15 +342,15 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                         </button>
                         <Link
                           to={`/dashboard/analytics/${link.id}`}
-                          <span className="truncate">urlz.lat/{code}</span>
+                          className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 p-1"
                           title="View analytics"
                         >
                           <BarChart3 className="h-4 w-4" />
-                          href={`${import.meta.env.VITE_APP_URL || window.location.origin}/${code}`}
+                        </Link>
                         <button
-                          onClick={() => copyToClipboard(`${import.meta.env.VITE_APP_URL || window.location.origin}/${code}`)}
+                          onClick={() => copyToClipboard(`${import.meta.env.VITE_APP_URL || window.location.origin}/r/${code}`)}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
-                          title={`urlz.lat/${code}`}
+                          title="Copy to clipboard"
                         >
                           <Copy className="h-4 w-4" />
                         </button>
