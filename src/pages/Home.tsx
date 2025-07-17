@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { GlobeDemo } from '../components/ui/globe-demo'
@@ -333,7 +333,7 @@ export function Home() {
                           </p>
                         </div>
                       </div>
-                    )}
+                    <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
                   </div>
                 </div>
               </div>
