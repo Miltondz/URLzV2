@@ -77,7 +77,7 @@ export function About() {
                   </a>
                   
                   <a
-                    href="mailto:milton@urlz.lat"
+                    href="mailto:miltonstartup@gmail.com"
                     className="inline-flex items-center px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 font-medium rounded-lg transition-colors space-x-2"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

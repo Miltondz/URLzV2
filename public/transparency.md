@@ -176,10 +176,12 @@ We retain your data according to the following schedule:
 - **Email**: support@urlz.lat
 - **Response Time**: Within 24 hours during business days
 - **Phone**: +1 (555) 123-4567 (Mon-Fri, 9AM-6PM EST)
+- **Phone**: +56 9 2185 7846 (Mon-Fri, 9AM-6PM EST)
 
 ### Legal Requests
 - **Email**: legal@urlz.lat
 - **Address**: 123 Tech Street, San Francisco, CA 94105
+- **Address**: Santiago, Región Metropolitana, Chile
 - **Process**: All legal requests must be submitted in writing
 
 ## Compliance and Certifications

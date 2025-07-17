@@ -185,7 +185,7 @@ export function TermsOfService() {
             <ul>
               <li><strong>Email:</strong> legal@urlz.lat</li>
               <li><strong>Support:</strong> support@urlz.lat</li>
-              <li><strong>Address:</strong> DunaTech, 123 Tech Street, San Francisco, CA 94105</li>
+              <li><strong>Address:</strong> DunaTech, Santiago, Región Metropolitana, Chile</li>
             </ul>
 
             <hr />
