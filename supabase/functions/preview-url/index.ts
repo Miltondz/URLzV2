@@ -32,77 +32,113 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Fetch the HTML content
-    const response = await fetch(long_url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; urlz.lat-preview/1.0)'
+    try {
+      // Fetch the HTML content with realistic User-Agent
+      const response = await fetch(long_url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        // Add timeout to prevent hanging
+        signal: AbortSignal.timeout(10000) // 10 second timeout
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
       }
-    })
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch URL: ${response.status}`)
-    }
+      const html = await response.text()
+      
+      // Parse HTML using DOMParser
+      const doc = new DOMParser().parseFromString(html, 'text/html')
+      
+      if (!doc) {
+        throw new Error('Failed to parse HTML content')
+      }
 
-    const html = await response.text()
-    
-    // Parse HTML using DOMParser
-    const doc = new DOMParser().parseFromString(html, 'text/html')
-    
-    if (!doc) {
-      throw new Error('Failed to parse HTML')
-    }
-
-    // Extract metadata
-    const title = doc.title || doc.querySelector('meta[property="og:title"]')?.getAttribute('content') || 'No title found'
-    
-    const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
-                       doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
-                       'No description available'
-    
-    let favicon = doc.querySelector('link[rel="icon"]')?.getAttribute('href') ||
+      // Extract metadata with graceful fallbacks
+      let title = null
+      try {
+        title = doc.title || 
+                doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+                doc.querySelector('meta[name="twitter:title"]')?.getAttribute('content') ||
+                'No title found'
+      } catch (e) {
+        title = 'No title found'
+      }
+      
+      let description = null
+      try {
+        description = doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
+                     doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
+                     doc.querySelector('meta[name="twitter:description"]')?.getAttribute('content') ||
+                     'No description available'
+      } catch (e) {
+        description = 'No description available'
+      }
+      
+      let favicon = null
+      try {
+        favicon = doc.querySelector('link[rel="icon"]')?.getAttribute('href') ||
                   doc.querySelector('link[rel="shortcut icon"]')?.getAttribute('href') ||
                   doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href')
-    
-    // Handle relative favicon URLs
-    if (favicon && !favicon.startsWith('http')) {
-      const baseUrl = new URL(long_url)
-      if (favicon.startsWith('/')) {
-        favicon = `${baseUrl.protocol}//${baseUrl.host}${favicon}`
-      } else {
-        favicon = `${baseUrl.protocol}//${baseUrl.host}/${favicon}`
+        
+        // Handle relative favicon URLs
+        if (favicon && !favicon.startsWith('http')) {
+          const baseUrl = new URL(long_url)
+          if (favicon.startsWith('/')) {
+            favicon = `${baseUrl.protocol}//${baseUrl.host}${favicon}`
+          } else {
+            favicon = `${baseUrl.protocol}//${baseUrl.host}/${favicon}`
+          }
+        }
+        
+        // Fallback to default favicon if none found
+        if (!favicon) {
+          const baseUrl = new URL(long_url)
+          favicon = `${baseUrl.protocol}//${baseUrl.host}/favicon.ico`
+        }
+      } catch (e) {
+        favicon = null
       }
-    }
-    
-    // Fallback to default favicon if none found
-    if (!favicon) {
-      const baseUrl = new URL(long_url)
-      favicon = `${baseUrl.protocol}//${baseUrl.host}/favicon.ico`
-    }
 
-    return new Response(
-      JSON.stringify({
-        title: title.substring(0, 100), // Limit title length
-        description: description.substring(0, 200), // Limit description length
-        favicon
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
-    )
+      return new Response(
+        JSON.stringify({
+          title: title ? title.substring(0, 100) : 'No title found', // Limit title length
+          description: description ? description.substring(0, 200) : 'No description available', // Limit description length
+          favicon
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      )
+
+    } catch (fetchError) {
+      console.error('Fetch or parsing error:', fetchError)
+      
+      // Return structured error response
+      return new Response(
+        JSON.stringify({ 
+          error: 'Could not fetch or parse the URL.',
+          details: fetchError.message
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200, // Return 200 so frontend can handle gracefully
+        }
+      )
+    }
 
   } catch (error) {
     console.error('Preview URL error:', error)
     return new Response(
       JSON.stringify({ 
-        error: 'Failed to fetch URL preview',
-        title: 'Preview unavailable',
-        description: 'Unable to load preview for this URL',
-        favicon: null
+        error: 'Could not fetch or parse the URL.',
+        details: error.message
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
+        status: 200, // Return 200 so frontend can handle gracefully
       }
     )
   }

@@ -36,10 +36,20 @@ export function LinkPreviewModal({ isOpen, onClose, url }: LinkPreviewModalProps
 
       if (error) throw error
       
-      setPreviewData(data)
+      // Check if the response contains an error
+      if (data.error) {
+        setError('Preview not available for this link.')
+        setPreviewData({
+          title: 'Preview unavailable',
+          description: 'Unable to load preview for this URL',
+          favicon: null
+        })
+      } else {
+        setPreviewData(data)
+      }
     } catch (error) {
       console.error('Error fetching preview:', error)
-      setError('Failed to load preview')
+      setError('Preview not available for this link.')
       // Set fallback data
       setPreviewData({
         title: 'Preview unavailable',

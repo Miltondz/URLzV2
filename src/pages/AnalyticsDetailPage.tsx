@@ -159,8 +159,10 @@ export function AnalyticsDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        {/* CSS Grid Container */}
+        <div className="grid grid-cols-1 gap-6 lg:gap-8">
         {/* Header */}
-        <div className="mb-6">
+        <div className="col-span-1">
           <Link 
             to="/dashboard" 
             className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mb-4"
@@ -194,7 +196,7 @@ export function AnalyticsDetailPage() {
         </div>
 
         {clicksData.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-12 text-center">
+          <div className="col-span-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-12 text-center">
             <Globe className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               No Analytics Data Yet
@@ -204,16 +206,18 @@ export function AnalyticsDetailPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {/* World Map */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <>
+            {/* Main Content Grid - Two Columns on Desktop */}
+            <div className="col-span-1 grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
+              {/* Left Column - Geographic Map (60% width) */}
+              <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
               <div className="flex items-center space-x-2 mb-4">
                 <MapPin className="h-5 w-5 text-blue-600" />
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   Geographic Distribution
                 </h2>
               </div>
-              <div className="h-96 rounded-lg overflow-hidden">
+              <div className="h-80 lg:h-96 rounded-lg overflow-hidden">
                 <MapContainer
                   center={[20, 0]}
                   zoom={2}
@@ -239,30 +243,30 @@ export function AnalyticsDetailPage() {
               </div>
             </div>
 
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Browser Chart */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+              {/* Right Column - Charts (40% width) */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Browser Chart */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <div className="flex items-center space-x-2 mb-4">
                   <Monitor className="h-5 w-5 text-green-600" />
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                     Browsers
                   </h2>
                 </div>
-                <div className="h-64 flex items-center justify-center">
+                <div className="h-48 lg:h-56 flex items-center justify-center">
                   <Pie data={browserChartData} options={{ maintainAspectRatio: false }} />
                 </div>
               </div>
 
-              {/* Country Chart */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                {/* Country Chart */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <div className="flex items-center space-x-2 mb-4">
                   <Globe className="h-5 w-5 text-purple-600" />
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                     Countries
                   </h2>
                 </div>
-                <div className="h-64">
+                <div className="h-48 lg:h-56">
                   <Bar 
                     data={countryChartData} 
                     options={{ 
@@ -277,10 +281,11 @@ export function AnalyticsDetailPage() {
                   />
                 </div>
               </div>
+              </div>
             </div>
 
-            {/* Recent Clicks Table */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            {/* Bottom Row - Recent Clicks Table (Full Width) */}
+            <div className="col-span-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
               <div className="flex items-center space-x-2 mb-4">
                 <Calendar className="h-5 w-5 text-orange-600" />
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -326,8 +331,9 @@ export function AnalyticsDetailPage() {
                 </table>
               </div>
             </div>
-          </div>
+          </>
         )}
+        </div>
       </div>
     </div>
   )
