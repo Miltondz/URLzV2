@@ -12,7 +12,7 @@ export function Home() {
   const { user } = useAuth()
   const [longUrl, setLongUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [newLink, setNewLink] = useState(null)
+  const [newLink, setNewLink] = useState<string>('')
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isVerified, setIsVerified] = useState<boolean | null>(null)
@@ -25,7 +25,7 @@ export function Home() {
 
     setIsLoading(true)
     setError(null)
-    setNewLink(null)
+    setNewLink('')
     setIsVerified(null)
     
     try {
@@ -41,7 +41,8 @@ export function Home() {
         throw error
       }
 
-      setNewLink(data)
+      // Set the state with the actual URL string from the response
+      setNewLink(data.short_url)
       setIsVerified(data.is_verified)
       setLongUrl('') // Clear the input
     } catch (error) {
@@ -54,7 +55,7 @@ export function Home() {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(newLink?.short_url || '')
+      await navigator.clipboard.writeText(newLink || '')
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
@@ -164,9 +165,12 @@ export function Home() {
                         Your shortened URL:
                       </p>
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
-                        <code className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-4 py-3 text-gray-900 dark:text-white break-all">
-                          {newLink.short_url}
-                        </code>
+                        <input
+                          type="text"
+                          readOnly
+                          value={newLink || ''} // Binds the input's value to the state
+                          className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-4 py-3 text-gray-900 dark:text-white font-mono"
+                        />
                         {isVerified && (
                           <div className="flex items-center space-x-1 px-3 py-2 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded text-green-700 dark:text-green-300 text-sm font-medium whitespace-nowrap">
                             <Shield className="h-4 w-4" />
