@@ -115,8 +115,11 @@ Deno.serve(async (req) => {
     }
 
     // --- CORRECCIÓN DE LA RESPUESTA FINAL ---
-    // Devolvemos el objeto completo del nuevo enlace, que el frontend necesita.
-    return new Response(JSON.stringify(newUrl), {
+    // Devolvemos el objeto del nuevo enlace CON la propiedad short_url que el frontend espera
+    return new Response(JSON.stringify({
+      ...newUrl,
+      short_url: shortUrl
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
