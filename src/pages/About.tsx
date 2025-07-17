@@ -31,19 +31,8 @@ export function About() {
         {/* Founder Section */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-            {/* Profile Image */}
-            <div className="lg:col-span-1 text-center">
-              <div className="relative inline-block">
-                <img
-                  src="/avatar.jpg"
-                  alt="Ivan Weiss - Founder"
-                  className="w-48 h-48 rounded-full object-cover mx-auto shadow-lg"
-                />
-              </div>
-            </div>
-
             {/* Content */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-3">
               <div className="flex items-center mb-4">
                 <User className="h-6 w-6 text-blue-600 mr-3" />
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Meet Our Founder</h2>

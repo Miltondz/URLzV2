@@ -14,6 +14,9 @@ import { Dashboard } from './pages/Dashboard'
 import { ProfilePage } from './pages/ProfilePage'
 import { TransparencyPage } from './pages/TransparencyPage'
 import { AnalyticsDetailPage } from './pages/AnalyticsDetailPage'
+import { PrivacyPolicy } from './pages/PrivacyPolicy'
+import { TermsOfService } from './pages/TermsOfService'
+import { StatusPage } from './pages/StatusPage'
 import { Redirect } from './pages/Redirect'
 import { useAuth } from './contexts/AuthContext'
 
@@ -41,6 +44,9 @@ function AppContent() {
           <Route path="/features" element={<Features />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/transparency" element={<TransparencyPage />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/status" element={<StatusPage />} />
           <Route 
             path="/login" 
             element={user ? <Navigate to="/dashboard" replace /> : <AuthComponent />} 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link2, BarChart3, Shield, Zap, Globe, Crown, Smartphone, Clock } from 'lucide-react'
+import { Link2, BarChart3, Shield, Zap, Globe, Crown, Smartphone, Clock, Eye, QrCode } from 'lucide-react'
 
 export function Features() {
   const features = [
@@ -24,20 +24,20 @@ export function Features() {
     },
     {
       icon: Shield,
-      title: 'Enterprise Security',
-      description: 'Bank-level security with SSL encryption, fraud protection, and 99.9% uptime guarantee.',
+      title: 'URL Safety Verification',
+      description: 'Automatic URL safety checking using Google Safe Browsing API to protect users from malicious links.',
       color: 'red'
     },
     {
-      icon: Globe,
-      title: 'Global CDN',
-      description: 'Lightning-fast redirects worldwide with our globally distributed content delivery network.',
+      icon: QrCode,
+      title: 'QR Code Generation',
+      description: 'Automatically generate QR codes for all your links with download and sharing capabilities.',
       color: 'indigo'
     },
     {
-      icon: Zap,
-      title: 'Instant Generation',
-      description: 'Generate shortened URLs in milliseconds with our optimized infrastructure and caching.',
+      icon: Eye,
+      title: 'Link Preview',
+      description: 'Safe preview of destination URLs before clicking, showing page title, description, and favicon.',
       color: 'yellow'
     },
     {
@@ -49,7 +49,7 @@ export function Features() {
     {
       icon: Clock,
       title: 'Link Management',
-      description: 'Organize, edit, and manage all your links from a centralized dashboard with bulk operations.',
+      description: 'Organize, edit, and manage all your links from a centralized dashboard with search and pagination.',
       color: 'teal'
     }
   ]
@@ -106,108 +106,27 @@ export function Features() {
           ))}
         </div>
 
-        {/* Pricing Tiers */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Choose Your Plan
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Start free and upgrade as you grow
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Free Plan */}
-            <div className="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-6">
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Free</h3>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">$0</div>
-                <div className="text-gray-500 dark:text-gray-400">per month</div>
-              </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Unlimited URL shortening
-                </li>
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Basic analytics
-                </li>
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Standard support
-                </li>
-              </ul>
-              <button className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                Get Started
-              </button>
-            </div>
-
-            {/* Pro Plan */}
-            <div className="border-2 border-blue-500 rounded-lg p-6 relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  Most Popular
-                </span>
-              </div>
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Pro</h3>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">$9</div>
-                <div className="text-gray-500 dark:text-gray-400">per month</div>
-              </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Everything in Free
-                </li>
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Custom branded links
-                </li>
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Advanced analytics
-                </li>
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Priority support
-                </li>
-              </ul>
-              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                Upgrade to Pro
-              </button>
-            </div>
-
-            {/* Business Plan */}
-            <div className="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-6">
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Business</h3>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">$29</div>
-                <div className="text-gray-500 dark:text-gray-400">per month</div>
-              </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Everything in Pro
-                </li>
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  Team collaboration
-                </li>
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  API access
-                </li>
-                <li className="flex items-center text-gray-600 dark:text-gray-400">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  24/7 support
-                </li>
-              </ul>
-              <button className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                Contact Sales
-              </button>
-            </div>
+        {/* Call to Action */}
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Ready to Get Started?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Join thousands of users who trust urlz.lat for their link management needs. Start shortening and tracking your URLs today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/login"
+              className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold text-lg rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Create Free Account
+            </a>
+            <a
+              href="/dashboard"
+              className="inline-flex items-center px-8 py-4 bg-blue-700 hover:bg-blue-800 text-white font-semibold text-lg rounded-lg transition-colors"
+            >
+              Go to Dashboard
+            </a>
           </div>
         </div>
       </div>

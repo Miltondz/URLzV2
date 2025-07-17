@@ -79,14 +79,6 @@ export function Footer() {
                   API Documentation
                 </a>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Pricing
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -112,22 +104,6 @@ export function Footer() {
                   Contact
                 </Link>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Blog
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -138,20 +114,28 @@ export function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Help Center
-                </a>
-              </li>
-              <li>
                 <Link
                   to="/transparency"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
                   Transparency
                 </Link>
+              </li>
+              <li>
+                <a
+                  href="/privacy"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
+                >
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/terms"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
+                >
+                  Terms of Service
+                </a>
               </li>
               <li>
                 <a
@@ -163,15 +147,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
-                >
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
+                  href="/status"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
                   Status Page
@@ -185,7 +161,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              © {new Date().getFullYear()} urlz.lat. All rights reserved.
+              © {new Date().getFullYear()} DunaTech. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a
