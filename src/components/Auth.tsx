@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '../lib/supabase'
@@ -7,6 +8,7 @@ import { Link as LinkIcon } from 'lucide-react'
 
 export function AuthComponent() {
   const { isDark } = useTheme()
+  const { t } = useTranslation()
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
@@ -15,10 +17,10 @@ export function AuthComponent() {
           <LinkIcon className="h-12 w-12 text-blue-600" />
         </div>
         <h2 className="mt-6 text-center text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
-          Welcome to urlz.lat
+          {t('auth.welcome_title')}
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          Smart URL shortening made simple
+          {t('auth.welcome_subtitle')}
         </p>
       </div>
 

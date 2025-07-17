@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { QRCodeGenerator } from './QRCodeGenerator'
 import { Link2, Copy, Check, X, Lock, Crown, Shield, AlertTriangle } from 'lucide-react'
@@ -10,6 +11,7 @@ interface ShortenerFormProps {
 }
 
 export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
+  const { t } = useTranslation()
   const [longUrl, setLongUrl] = useState('')
   const [customSlug, setCustomSlug] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -130,7 +132,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
       <div className="flex items-center space-x-2 mb-6">
         <Link2 className="h-6 w-6 text-blue-600" />
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
-          Shorten URL
+          {t('shortener.title')}
         </h2>
       </div>
 
@@ -142,7 +144,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
             <div className="space-y-4">
               <div>
                 <label htmlFor="longUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Enter your long URL
+                  {t('shortener.enter_long_url')}
                 </label>
                 <div className="relative">
                   <input
@@ -151,7 +153,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                     value={longUrl}
                     onChange={(e) => setLongUrl(e.target.value)}
                     onBlur={handleUrlBlur}
-                    placeholder="https://example.com/very/long/url"
+                    placeholder={t('shortener.url_placeholder')}
                     className={`w-full px-3 sm:px-4 py-2 sm:py-3 pr-16 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors ${
                       isVerified === true ? 'border-green-300 dark:border-green-600' :
                       isVerified === false ? 'border-red-300 dark:border-red-600' :
@@ -168,7 +170,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                         <Shield className="h-4 w-4 text-green-600" />
                         <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block z-10">
                           <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-                            URL verified as safe
+                            {t('shortener.url_verified_safe')}
                             <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                           </div>
                         </div>
@@ -178,7 +180,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                         <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block z-10">
                           <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-                            URL flagged as potentially unsafe
+                            {t('shortener.url_flagged_unsafe')}
                             <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                           </div>
                         </div>
@@ -191,7 +193,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                       onClick={handlePaste}
                       disabled={pasteLoading}
                       className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors disabled:opacity-50"
-                      title="Paste from clipboard"
+                      title={t('shortener.paste_from_clipboard')}
                     >
                       {pasteLoading ? (
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
@@ -208,13 +210,13 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                 {isVerified === false && (
                   <p className="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center space-x-1">
                     <AlertTriangle className="h-3 w-3" />
-                    <span>This URL has been flagged as potentially unsafe</span>
+                    <span>{t('shortener.url_flagged_unsafe')}</span>
                   </p>
                 )}
                 {isVerified === true && (
                   <p className="mt-1 text-xs text-green-600 dark:text-green-400 flex items-center space-x-1">
                     <Shield className="h-3 w-3" />
-                    <span>URL verified as safe</span>
+                    <span>{t('shortener.url_verified_safe')}</span>
                   </p>
                 )}
               </div>
@@ -222,13 +224,13 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label htmlFor="customSlug" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Custom Slug (Optional)
+                    {t('shortener.custom_slug')}
                   </label>
                   {!isPro && (
                     <div className="flex items-center space-x-1">
                       <Crown className="h-4 w-4 text-yellow-500" />
                       <span className="text-xs font-medium text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 px-2 py-1 rounded">
-                        PRO
+                        {t('shortener.pro_feature')}
                       </span>
                     </div>
                   )}
@@ -239,7 +241,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                     id="customSlug"
                     value={customSlug}
                     onChange={(e) => setCustomSlug(e.target.value)}
-                    placeholder="my-custom-link"
+                    placeholder={t('shortener.custom_slug_placeholder')}
                     disabled={!isPro || subscriptionLoading}
                     className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       !isPro 
@@ -271,7 +273,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                         <Lock className="h-5 w-5 text-gray-400" />
                         <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block z-10">
                           <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-                            Upgrade to Pro to use custom slugs!
+                            {t('shortener.upgrade_pro_custom_slugs')}
                             <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                           </div>
                         </div>
@@ -281,7 +283,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                 </div>
                 {!isPro && (
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    Create memorable, branded links with a Pro subscription
+                    {t('shortener.custom_slug_description')}
                   </p>
                 )}
               </div>
@@ -302,7 +304,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                 <>
                   <Link2 className="h-4 w-4" />
                   <span>
-                    {isVerified === false ? 'Shorten Anyway' : 'Shorten URL'}
+                    {isVerified === false ? t('shortener.shorten_anyway') : t('shortener.shorten_url')}
                   </span>
                 </>
               )}
@@ -315,7 +317,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
               <button 
                 onClick={() => setError(null)} 
                 className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 transition-colors ml-2 flex-shrink-0 mt-0.5"
-                aria-label="Dismiss error"
+                aria-label={t('common.close')}
               >
                 <X className="h-4 w-4" />
               </button>
@@ -325,7 +327,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
           {shortUrl && (
             <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
               <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
-                Your shortened URL:
+                {t('shortener.your_shortened_url')}
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                 <code className="flex-1 text-xs sm:text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-2 sm:px-3 py-2 text-gray-900 dark:text-white break-all">
@@ -336,7 +338,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
                   className="flex items-center justify-center space-x-1 px-3 py-2 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 transition-colors whitespace-nowrap"
                 >
                   {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  <span>{copied ? 'Copied!' : 'Copy'}</span>
+                  <span>{copied ? t('shortener.copied') : t('shortener.copy')}</span>
                 </button>
               </div>
             </div>
