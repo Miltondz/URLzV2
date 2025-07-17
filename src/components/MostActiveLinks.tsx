@@ -33,7 +33,7 @@ export function MostActiveLinks({ links }: MostActiveLinksProps) {
         </div>
       ) : (
         <div className="flex flex-col sm:flex-row sm:space-x-4 sm:overflow-x-auto space-y-4 sm:space-y-0 pb-2">
-          {links.map((link, index) => {
+          {links.slice(0, 4).map((link, index) => {
             const code = link.custom_slug || link.short_code
             const shortUrl = `urlz.lat/r/${code}`
             const fullShortUrl = `${window.location.origin}/${code}`

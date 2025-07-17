@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ExternalLink, BarChart3, Calendar, Copy, Trash2, Eye, Shield, Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ExternalLink, BarChart3, Calendar, Copy, Trash2, Eye, Shield, Search, ChevronLeft, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
 import { ConfirmDialog } from './ConfirmDialog'
 import { LinkPreviewModal } from './LinkPreviewModal'
 import { supabase } from '../lib/supabase'
@@ -20,6 +20,9 @@ interface LinkListProps {
   refetchStats: () => void
 }
 
+type SortField = 'clicks' | 'created_at' | null
+type SortDirection = 'asc' | 'desc'
+
 const ITEMS_PER_PAGE = 10
 
 export function LinkList({ links, refetchStats }: LinkListProps) {
@@ -29,6 +32,8 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
+  const [sortField, setSortField] = useState<SortField>(null)
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [previewModal, setPreviewModal] = useState<{
     isOpen: boolean
     url: string
@@ -52,17 +57,64 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
     setIsLoading(false)
   }, [links])
 
+  // Handle column sorting
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      // If clicking the same field, reverse the direction
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      // If clicking a new field, set it as the sort field with default direction
+      setSortField(field)
+      setSortDirection('desc')
+    }
+  }
+
+  // Get sort icon for column headers
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="h-4 w-4 text-gray-400" />
+    }
+    return sortDirection === 'asc' 
+      ? <ArrowUp className="h-4 w-4 text-blue-600" />
+      : <ArrowDown className="h-4 w-4 text-blue-600" />
+  }
+
   // Filter links based on search term
   const filteredLinks = useMemo(() => {
-    if (!searchTerm.trim()) return localLinks
+    let filtered = localLinks
     
-    const term = searchTerm.toLowerCase()
-    return localLinks.filter(link => 
-      link.long_url.toLowerCase().includes(term) ||
-      (link.short_code && link.short_code.toLowerCase().includes(term)) ||
-      (link.custom_slug && link.custom_slug.toLowerCase().includes(term))
-    )
-  }, [localLinks, searchTerm])
+    // Apply search filter
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase()
+      filtered = localLinks.filter(link => 
+        link.long_url.toLowerCase().includes(term) ||
+        (link.short_code && link.short_code.toLowerCase().includes(term)) ||
+        (link.custom_slug && link.custom_slug.toLowerCase().includes(term))
+      )
+    }
+    
+    // Apply sorting
+    if (sortField) {
+      filtered = [...filtered].sort((a, b) => {
+        let aValue: any
+        let bValue: any
+        
+        if (sortField === 'clicks') {
+          aValue = a.clicks
+          bValue = b.clicks
+        } else if (sortField === 'created_at') {
+          aValue = new Date(a.created_at).getTime()
+          bValue = new Date(b.created_at).getTime()
+        }
+        
+        if (sortDirection === 'asc') {
+          return aValue - bValue
+        } else {
+          return bValue - aValue
+        }
+      })
+    }
+    
 
   // Pagination logic
   const totalPages = Math.ceil(filteredLinks.length / ITEMS_PER_PAGE)
