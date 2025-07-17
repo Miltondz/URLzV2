@@ -15,8 +15,8 @@ export function Home() {
   const [shortUrl, setShortUrl] = useState('')
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [pasteLoading, setPasteLoading] = useState(false)
   const [qrUrl, setQrUrl] = useState('')
+  const [pasteLoading, setPasteLoading] = useState(false)
 
   const handleAnonymousShorten = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -394,6 +394,16 @@ export function Home() {
                     <span>Create Free Account</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
+                </div>
+              )}
+              
+              {qrUrl && (
+                <div className="flex justify-center mt-8">
+                  <QRCodeGenerator 
+                    url={qrUrl} 
+                    size={200}
+                    className="w-full max-w-xs"
+                  />
                 </div>
               )}
             </div>
