@@ -10,7 +10,12 @@
     "profile_settings": "Configuración del Perfil",
     "donate": "Donar",
     "donate_thanks": "¡Gracias por tu apoyo!",
-    "donate_confirm": "¿Deseas apoyar el desarrollo de urlz.lat con una donación? Serás redirigido a Flow para completar el pago."
+    "donate_confirm": "¿Deseas apoyar el desarrollo de urlz.lat con una donación? Serás redirigido a Flow para completar el pago.",
+    "donate_modal_title": "Apoyar a urlz.lat",
+    "donate_modal_message": "¿Deseas apoyar el desarrollo con una donación? Serás redirigido a Flow para completar el pago de forma segura.",
+    "donate_mobile_text": "Donar - ¡Gracias por tu apoyo!",
+    "accept": "Aceptar",
+    "cancel": "Cancelar"
   },
   "hero": {
     "title": "Enlaces cortos,",

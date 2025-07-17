@@ -114,13 +114,13 @@ export function Navigation() {
               <button
                 onClick={handleDonation}
                 className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
-                title="Apoyar el proyecto con una donación"
+                title={t('nav.donate_confirm')}
               >
                 <Heart className="h-4 w-4 animate-pulse" />
-                <span className="hidden sm:inline">Donar</span>
+                <span className="hidden sm:inline">{t('nav.donate')}</span>
               </button>
               <span className="hidden lg:inline text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                ¡Gracias por tu apoyo!
+                {t('nav.donate_thanks')}
               </span>
             </div>
 
@@ -250,7 +250,7 @@ export function Navigation() {
               className="flex items-center justify-center space-x-2 px-3 py-2 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white text-base font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
             >
               <Heart className="h-4 w-4 animate-pulse" />
-              <span>Donar - ¡Gracias por tu apoyo!</span>
+              <span>{t('nav.donate_mobile_text')}</span>
             </button>
           </div>
         </div>
@@ -261,11 +261,11 @@ export function Navigation() {
         isOpen={isDonationModalOpen}
         onClose={() => setIsDonationModalOpen(false)}
         onConfirm={handleConfirmDonation}
-        title="Apoyar a urlz.lat"
-        message="¿Deseas apoyar el desarrollo con una donación? Serás redirigido a Flow para completar el pago de forma segura."
+        title={t('nav.donate_modal_title')}
+        message={t('nav.donate_modal_message')}
         icon={Heart}
-        confirmText="Aceptar"
-        cancelText="Cancelar"
+        confirmText={t('nav.accept')}
+        cancelText={t('nav.cancel')}
       />
     </nav>
   )

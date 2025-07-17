@@ -10,7 +10,12 @@
     "profile_settings": "Profile Settings",
     "donate": "Donate",
     "donate_thanks": "Thanks for your support!",
-    "donate_confirm": "Would you like to support urlz.lat development with a donation? You will be redirected to Flow to complete the payment."
+    "donate_confirm": "Would you like to support urlz.lat development with a donation? You will be redirected to Flow to complete the payment.",
+    "donate_modal_title": "Support urlz.lat",
+    "donate_modal_message": "Would you like to support development with a donation? You will be redirected to Flow to complete the payment securely.",
+    "donate_mobile_text": "Donate - Thanks for your support!",
+    "accept": "Accept",
+    "cancel": "Cancel"
   },
   "hero": {
     "title": "Short links,",
