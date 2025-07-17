@@ -48,8 +48,24 @@ Deno.serve(async (req) => {
       try {
         // Obtenemos los datos del visitante desde las cabeceras de la petición.
         // Supabase Edge Functions inyectan estas cabeceras automáticamente.
-        const country = req.headers.get('x-supabase-country-code');
-        const city = req.headers.get('x-supabase-city');
+        let country = req.headers.get('x-supabase-country-code');
+        let city = req.headers.get('x-supabase-city');
+        const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+
+        // Fallback to a public API if Supabase headers are missing
+        if ((!country || !city) && ip) {
+          try {
+            const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`);
+            if (geoResponse.ok) {
+              const geoData = await geoResponse.json();
+              country = country || geoData.country_code;
+              city = city || geoData.city;
+            }
+          } catch (e) { 
+            console.error('Geo API fallback failed:', e); 
+          }
+        }
+        
         const userAgent = req.headers.get('user-agent');
         
         // Usamos una librería para parsear el User-Agent y obtener datos limpios.
@@ -58,8 +74,8 @@ Deno.serve(async (req) => {
         
         const analyticsData = {
           url_id: urlRecord.id,
-          country: country,
-          city: city,
+          country: country || 'Unknown', // Default to 'Unknown' if all fails
+          city: city || 'Unknown',
           browser_name: uaResult.browser.name,
           os_name: uaResult.os.name,
           device_type: uaResult.device.type || 'desktop', // 'desktop' por defecto
@@ -71,7 +87,7 @@ Deno.serve(async (req) => {
           console.error('Failed to log click analytics:', logError);
         }
       } catch (analyticsError) {
-        console.error('Error in recordAnalytics function:', analyticsError);
+        console.error('Error in recordAnalytics:', analyticsError);
       }
     };
     
