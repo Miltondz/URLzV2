@@ -35,11 +35,9 @@ Deno.serve(async (req) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
-    // Verifica que el usuario esté autenticado
+    // Intenta obtener el usuario (puede ser null para usuarios anónimos)
     const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders })
-    }
+    // Note: authError is expected for anonymous requests, so we don't throw here
 
     // Obtiene los datos del cuerpo de la petición
     const { long_url, custom_slug, is_verified } = await req.json()
@@ -54,6 +52,14 @@ Deno.serve(async (req) => {
 
     // Lógica de negocio para los SLUGS PERSONALIZADOS (Función Pro)
     if (custom_slug) {
+      // Custom slugs require authentication
+      if (!user) {
+        return new Response(
+          JSON.stringify({ error: 'You must be logged in to create custom slugs.' }), 
+          { status: 401, headers: corsHeaders }
+        )
+      }
+
       final_custom_slug = custom_slug;
 
       // 1. Revisa el plan de suscripción del usuario
@@ -99,7 +105,7 @@ Deno.serve(async (req) => {
     const { data: newUrl, error: insertError } = await supabase
       .from('urls')
       .insert({
-        user_id: user.id,
+        user_id: user?.id || null, // Will be null for anonymous users
         long_url,
         short_code: final_short_code,   // Se guarda el código aleatorio (o null si es slug)
         custom_slug: final_custom_slug, // Se guarda el slug personalizado (o null si es aleatorio)

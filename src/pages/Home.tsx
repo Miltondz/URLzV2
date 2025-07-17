@@ -1,11 +1,59 @@
 import React from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { GlobeDemo } from '../components/ui/globe-demo'
-import { Link2, Zap, Shield, BarChart3, ArrowRight } from 'lucide-react'
+import { Link2, Zap, Shield, BarChart3, ArrowRight, Copy, Check, X } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 export function Home() {
   const { user } = useAuth()
+  const [longUrl, setLongUrl] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [shortUrl, setShortUrl] = useState('')
+  const [copied, setCopied] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleAnonymousShorten = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!longUrl.trim()) return
+
+    setIsLoading(true)
+    setError(null)
+    setShortUrl('')
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('shorten-url', {
+        body: {
+          long_url: longUrl,
+          // No custom_slug for anonymous users
+          // No Authorization header - this will be an anonymous request
+        }
+      })
+
+      if (error) {
+        throw error
+      }
+
+      setShortUrl(data.short_url)
+      setLongUrl('') // Clear the input
+    } catch (error) {
+      console.error('Error shortening URL:', error)
+      setError(error.message || 'An unexpected error occurred.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(shortUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (error) {
+      console.error('Failed to copy:', error)
+    }
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -35,6 +83,87 @@ export function Home() {
               Create short, branded links that boost your brand and improve performance effortlessly.
               Track clicks and get the insights you need to grow.
             </p>
+
+            {/* Anonymous URL Shortening Form */}
+            {!user && (
+              <div className="max-w-2xl mx-auto mb-8">
+                <div className="bg-white/10 dark:bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-white/20 dark:border-gray-700/20">
+                  <h3 className="text-xl font-semibold text-white mb-4 text-center">
+                    Try it now - No signup required!
+                  </h3>
+                  
+                  <form onSubmit={handleAnonymousShorten} className="space-y-4">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <div className="flex-1">
+                        <input
+                          type="url"
+                          value={longUrl}
+                          onChange={(e) => setLongUrl(e.target.value)}
+                          placeholder="https://example.com/your-long-url"
+                          className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          required
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isLoading || !longUrl.trim()}
+                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors flex items-center justify-center space-x-2 whitespace-nowrap"
+                      >
+                        {isLoading ? (
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        ) : (
+                          <>
+                            <Link2 className="h-4 w-4" />
+                            <span>Shorten URL</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+
+                  {error && (
+                    <div className="mt-4 bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-3 rounded-lg flex justify-between items-start">
+                      <span className="text-sm">{error}</span>
+                      <button 
+                        onClick={() => setError(null)} 
+                        className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 transition-colors ml-2 flex-shrink-0"
+                        aria-label="Dismiss error"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
+
+                  {shortUrl && (
+                    <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                      <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
+                        Your shortened URL:
+                      </p>
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                        <code className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white break-all">
+                          {shortUrl}
+                        </code>
+                        <button
+                          onClick={copyToClipboard}
+                          className="flex items-center justify-center space-x-1 px-3 py-2 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 bg-white dark:bg-gray-700 border border-green-200 dark:border-green-600 rounded transition-colors whitespace-nowrap"
+                        >
+                          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                          <span>{copied ? 'Copied!' : 'Copy'}</span>
+                        </button>
+                      </div>
+                      <div className="mt-3 text-center">
+                        <Link
+                          to="/login"
+                          className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                        >
+                          Sign up for free to track clicks and create custom links →
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {user ? (
