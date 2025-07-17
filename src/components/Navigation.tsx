@@ -124,7 +124,14 @@ export function Navigation() {
                     <button
                       onClick={() => {
                         setIsDropdownOpen(false)
-                        signOut()
+                        signOut().then(() => {
+                          // Force redirect to home page after logout
+                          window.location.href = '/'
+                        }).catch((error) => {
+                          console.error('Logout error:', error)
+                          // Still redirect even if there's an error
+                          window.location.href = '/'
+                        })
                       }}
                       className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors"
                     >
