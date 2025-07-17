@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { GlobeDemo } from '../components/ui/globe-demo'
+import { QRCodeGenerator } from '../components/QRCodeGenerator'
 import { Link2, Zap, Shield, BarChart3, ArrowRight, Copy, Check, X, Crown, Eye, Smartphone, QrCode } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { QRCodeSVG } from 'qrcode.react'
 
 export function Home() {
   const { user } = useAuth()
@@ -15,6 +15,7 @@ export function Home() {
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [qrUrl, setQrUrl] = useState('')
+  const [pasteLoading, setPasteLoading] = useState(false)
 
   const handleAnonymousShorten = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,6 +58,18 @@ export function Home() {
     }
   }
 
+  const handlePaste = async () => {
+    setPasteLoading(true)
+    try {
+      const text = await navigator.clipboard.readText()
+      setLongUrl(text)
+    } catch (error) {
+      console.error('Failed to paste:', error)
+    } finally {
+      setPasteLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Section 1: Hero Form */}
@@ -83,80 +96,110 @@ export function Home() {
             {!user && (
               <div className="max-w-2xl mx-auto mb-8">
                 <div className="bg-white/10 dark:bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 border border-white/20 dark:border-gray-700/20">
-                  <form onSubmit={handleAnonymousShorten} className="space-y-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <div className="flex-1">
-                        <input
-                          type="url"
-                          value={longUrl}
-                          onChange={(e) => setLongUrl(e.target.value)}
-                          placeholder="https://example.com/your-long-url"
-                          className="w-full px-6 py-4 text-lg text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                          required
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={isLoading || !longUrl.trim()}
-                        className="px-8 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold text-lg rounded-lg transition-colors flex items-center justify-center space-x-2 whitespace-nowrap"
-                      >
-                        {isLoading ? (
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                        ) : (
-                          <>
-                            <Link2 className="h-5 w-5" />
-                            <span>Shorten URL</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </form>
+                  {/* Two Column Layout */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    {/* Left Column - Form */}
+                    <div>
+                      <form onSubmit={handleAnonymousShorten} className="space-y-6">
+                        <div className="space-y-4">
+                          <div className="relative">
+                            <input
+                              type="url"
+                              value={longUrl}
+                              onChange={(e) => setLongUrl(e.target.value)}
+                              placeholder="https://example.com/your-long-url"
+                              className="w-full px-6 py-4 pr-16 text-lg text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                              required
+                            />
+                            <button
+                              type="button"
+                              onClick={handlePaste}
+                              disabled={pasteLoading}
+                              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
+                              title="Paste from clipboard"
+                            >
+                              {pasteLoading ? (
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-600"></div>
+                              ) : (
+                                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                              )}
+                            </button>
+                          </div>
+                          <button
+                            type="submit"
+                            disabled={isLoading || !longUrl.trim()}
+                            className="w-full px-8 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold text-lg rounded-lg transition-colors flex items-center justify-center space-x-2"
+                          >
+                            {isLoading ? (
+                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                            ) : (
+                              <>
+                                <Link2 className="h-5 w-5" />
+                                <span>Shorten URL</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </form>
 
-                  {error && (
-                    <div className="mt-6 bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-4 rounded-lg flex justify-between items-start">
-                      <span className="text-sm">{error}</span>
-                      <button 
-                        onClick={() => setError(null)} 
-                        className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 transition-colors ml-2 flex-shrink-0"
-                        aria-label="Dismiss error"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  )}
+                      {error && (
+                        <div className="mt-6 bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-4 rounded-lg flex justify-between items-start">
+                          <span className="text-sm">{error}</span>
+                          <button 
+                            onClick={() => setError(null)} 
+                            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 transition-colors ml-2 flex-shrink-0"
+                            aria-label="Dismiss error"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      )}
 
-                  {shortUrl && (
-                    <div className="mt-6 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                      <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-3">
-                        Your shortened URL:
-                      </p>
-                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
-                        <code className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-4 py-3 text-gray-900 dark:text-white break-all">
-                          {shortUrl}
-                        </code>
-                        <button
-                          onClick={copyToClipboard}
-                          className="flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 bg-white dark:bg-gray-700 border border-green-200 dark:border-green-600 rounded transition-colors whitespace-nowrap"
-                        >
-                          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                          <span>{copied ? 'Copied!' : 'Copy'}</span>
-                        </button>
-                      </div>
-                      <div className="mt-4 text-center">
-                        <p className="text-xs text-green-700 dark:text-green-300 mb-2">
-                          ⏰ Anonymous links expire in 7 days. Create a free account for permanent links.
-                        </p>
-                        <Link
-                          to="/login"
-                          className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-                        >
-                          Create Free Account →
-                        </Link>
-                      </div>
+                      {shortUrl && (
+                        <div className="mt-6 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                          <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-3">
+                            Your shortened URL:
+                          </p>
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
+                            <code className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-4 py-3 text-gray-900 dark:text-white break-all">
+                              {shortUrl}
+                            </code>
+                            <button
+                              onClick={copyToClipboard}
+                              className="flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 bg-white dark:bg-gray-700 border border-green-200 dark:border-green-600 rounded transition-colors whitespace-nowrap"
+                            >
+                              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                              <span>{copied ? 'Copied!' : 'Copy'}</span>
+                            </button>
+                          </div>
+                          <div className="mt-4 text-center">
+                            <p className="text-xs text-green-700 dark:text-green-300 mb-2">
+                              ⏰ Anonymous links expire in 7 days. Create a free account for permanent links.
+                            </p>
+                            <Link
+                              to="/login"
+                              className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                            >
+                              Create Free Account →
+                            </Link>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
 
-                  <p className="mt-4 text-sm text-gray-300 dark:text-gray-400 text-center">
+                    {/* Right Column - QR Code */}
+                    <div className="flex justify-center">
+                      <QRCodeGenerator 
+                        url={longUrl} 
+                        size={180}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+
+                  <p className="mt-6 text-sm text-gray-300 dark:text-gray-400 text-center">
                     Anonymous links expire in 7 days. Create a free account for permanent links.
                   </p>
                 </div>
@@ -351,6 +394,26 @@ export function Home() {
                     <span>Create Free Account</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
+                </div>
+              )}
+              
+              {qrUrl && (
+                <div className="flex justify-center mt-8">
+                  <QRCodeGenerator 
+                    url={qrUrl} 
+                    size={200}
+                    className="w-full max-w-xs"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
                 </div>
               )}
             </div>
