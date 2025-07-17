@@ -28,6 +28,7 @@ type SortDirection = 'asc' | 'desc'
 const ITEMS_PER_PAGE = 10
 
 export function LinkList({ links, refetchStats }: LinkListProps) {
+  const showHeader = true
   const [localLinks, setLocalLinks] = useState<LinkData[]>(links)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
