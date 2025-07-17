@@ -253,7 +253,8 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({
       short_url: shortUrl,
       id: newUrl.id,
-      expires_at: newUrl.expires_at || null
+      expires_at: newUrl.expires_at || null,
+      is_verified: urlIsSafe
     }), {
       headers: {
         ...corsHeaders,

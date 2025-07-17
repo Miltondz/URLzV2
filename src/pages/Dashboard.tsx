@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
+import Papa from 'papaparse'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { ShortenerForm } from '../components/ShortenerForm'
 import { LinkList } from '../components/LinkList'
 import { MostActiveLinks } from '../components/MostActiveLinks'
-import { BarChart3, Link2, TrendingUp } from 'lucide-react'
+import { BarChart3, Link2, TrendingUp, Download } from 'lucide-react'
 
 interface DashboardStats {
   totalLinks: number
@@ -83,7 +84,7 @@ export function Dashboard() {
       // Fetch all links
       const { data: linksData, error: linksError } = await supabase
         .from('urls')
-        .select('id, long_url, short_code, custom_slug, clicks, created_at')
+        .select('id, long_url, short_code, custom_slug, clicks, created_at, is_verified, qr_code_path')
         .order('created_at', { ascending: false })
 
       if (linksError) throw linksError

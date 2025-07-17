@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ExternalLink, BarChart3, Calendar, Copy, Trash2, Eye, Shield, Search, ChevronLeft, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
+import { ExternalLink, BarChart3, Calendar, Copy, Trash2, Eye, Shield, Search, ChevronLeft, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, QrCode } from 'lucide-react'
 import { ConfirmDialog } from './ConfirmDialog'
 import { LinkPreviewModal } from './LinkPreviewModal'
+import { QRCodeModal } from './QRCodeModal'
 import { supabase } from '../lib/supabase'
 
 interface LinkData {
@@ -13,6 +14,7 @@ interface LinkData {
   clicks: number
   is_verified: boolean
   created_at: string
+  qr_code_path?: string
 }
 
 interface LinkListProps {
@@ -40,6 +42,13 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
   }>({
     isOpen: false,
     url: ''
+  })
+  const [qrModal, setQrModal] = useState<{
+    isOpen: boolean
+    link: LinkData | null
+  }>({
+    isOpen: false,
+    link: null
   })
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [deleteDialog, setDeleteDialog] = useState<{
@@ -147,6 +156,20 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
     setPreviewModal({
       isOpen: false,
       url: ''
+    })
+  }
+
+  const openQRModal = (link: LinkData) => {
+    setQrModal({
+      isOpen: true,
+      link
+    })
+  }
+
+  const closeQRModal = () => {
+    setQrModal({
+      isOpen: false,
+      link: null
     })
   }
 
@@ -313,16 +336,18 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
 
   return (
     <>
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
-            Your Links
-          </h2>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            {filteredLinks.length} {filteredLinks.length === 1 ? 'link' : 'links'}
-            {searchTerm && ` (filtered from ${localLinks.length})`}
-          </span>
-        </div>
+      <div className={showHeader ? "bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6" : ""}>
+        {showHeader && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
+              Your Links
+            </h2>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {filteredLinks.length} {filteredLinks.length === 1 ? 'link' : 'links'}
+              {searchTerm && ` (filtered from ${localLinks.length})`}
+            </span>
+          </div>
+        )}
 
         {/* Search Bar */}
         <div className="mb-6">
@@ -416,7 +441,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           {getSortIcon('created_at')}
                         </button>
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[100px]">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px]">
                         Actions
                       </th>
                     </tr>
@@ -499,18 +524,27 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           </div>
                         </td>
                         <td className="px-4 py-4">
-                          <button
-                            onClick={() => openDeleteDialog(link.id, link.long_url)}
-                            disabled={deletingId === link.id}
-                            className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                            title="Delete link"
-                          >
-                            {deletingId === link.id ? (
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
-                            ) : (
-                              <Trash2 className="h-4 w-4" />
-                            )}
-                          </button>
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => openQRModal(link)}
+                              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                              title="View QR Code"
+                            >
+                              <QrCode className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => openDeleteDialog(link.id, link.long_url)}
+                              disabled={deletingId === link.id}
+                              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              title="Delete link"
+                            >
+                              {deletingId === link.id ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                              ) : (
+                                <Trash2 className="h-4 w-4" />
+                              )}
+                            </button>
+                          </div>
                         </td>
                             </>
                           )
@@ -621,18 +655,27 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                     </div>
 
                     <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                      <button
-                        onClick={() => openDeleteDialog(link.id, link.long_url)}
-                        disabled={deletingId === link.id}
-                        className="flex items-center space-x-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
-                      >
-                        {deletingId === link.id ? (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
-                        ) : (
-                          <Trash2 className="h-4 w-4" />
-                        )}
-                        <span>{deletingId === link.id ? 'Deleting...' : 'Delete Link'}</span>
-                      </button>
+                      <div className="flex items-center space-x-4">
+                        <button
+                          onClick={() => openQRModal(link)}
+                          className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors text-sm"
+                        >
+                          <QrCode className="h-4 w-4" />
+                          <span>View QR Code</span>
+                        </button>
+                        <button
+                          onClick={() => openDeleteDialog(link.id, link.long_url)}
+                          disabled={deletingId === link.id}
+                          className="flex items-center space-x-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+                        >
+                          {deletingId === link.id ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
+                          <span>{deletingId === link.id ? 'Deleting...' : 'Delete Link'}</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                     )
@@ -664,6 +707,13 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
         isOpen={previewModal.isOpen}
         onClose={closePreviewModal}
         url={previewModal.url}
+      />
+
+      {/* QR Code Modal */}
+      <QRCodeModal
+        isOpen={qrModal.isOpen}
+        onClose={closeQRModal}
+        link={qrModal.link!}
       />
     </>
   )

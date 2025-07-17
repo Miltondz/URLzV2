@@ -15,6 +15,7 @@ export function Home() {
   const [shortUrl, setShortUrl] = useState('')
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isVerified, setIsVerified] = useState<boolean | null>(null)
   const [qrUrl, setQrUrl] = useState('')
   const [pasteLoading, setPasteLoading] = useState(false)
 
@@ -25,6 +26,7 @@ export function Home() {
     setIsLoading(true)
     setError(null)
     setShortUrl('')
+    setIsVerified(null)
     
     try {
       const { data, error } = await supabase.functions.invoke('shorten-url', {
@@ -40,6 +42,7 @@ export function Home() {
       }
 
       setShortUrl(data.short_url)
+      setIsVerified(data.is_verified)
       setLongUrl('') // Clear the input
     } catch (error) {
       console.error('Error shortening URL:', error)
@@ -164,6 +167,12 @@ export function Home() {
                         <code className="flex-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-4 py-3 text-gray-900 dark:text-white break-all">
                           {shortUrl}
                         </code>
+                        {isVerified && (
+                          <div className="flex items-center space-x-1 px-3 py-2 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded text-green-700 dark:text-green-300 text-sm font-medium whitespace-nowrap">
+                            <Shield className="h-4 w-4" />
+                            <span>✔️ Verificado</span>
+                          </div>
+                        )}
                         <button
                           onClick={copyToClipboard}
                           className="flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 bg-white dark:bg-gray-700 border border-green-200 dark:border-green-600 rounded transition-colors whitespace-nowrap"
