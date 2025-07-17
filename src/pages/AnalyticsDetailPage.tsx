@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { ArrowLeft, Globe, Monitor, MapPin, Calendar, BarChart3 } from 'lucide-react'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js'
@@ -38,6 +39,7 @@ interface UrlData {
 }
 
 export function AnalyticsDetailPage() {
+  const { t } = useTranslation()
   const { linkId } = useParams<{ linkId: string }>()
   const [urlData, setUrlData] = useState<UrlData | null>(null)
   const [clicksData, setClicksData] = useState<ClickData[]>([])
@@ -85,7 +87,7 @@ export function AnalyticsDetailPage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t('analytics.loading_analytics')}</p>
         </div>
       </div>
     )
@@ -95,9 +97,9 @@ export function AnalyticsDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 dark:text-red-400 mb-4">{error || 'URL not found'}</p>
+          <p className="text-red-600 dark:text-red-400 mb-4">{error || t('errors.not_found')}</p>
           <Link to="/dashboard" className="text-blue-600 hover:text-blue-800">
-            Back to Dashboard
+            {t('analytics.back_to_dashboard')}
           </Link>
         </div>
       </div>
@@ -170,28 +172,28 @@ export function AnalyticsDetailPage() {
             className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mb-4"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Dashboard</span>
+            <span>{t('analytics.back_to_dashboard')}</span>
           </Link>
           
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Link Analytics
+              {t('analytics.title')}
             </h1>
             <div className="space-y-2">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                <strong>Short URL:</strong> 
+                <strong>{t('analytics.short_url')}:</strong> 
                 <a href={shortUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 dark:text-blue-400 ml-2">
                   {shortUrl}
                 </a>
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                <strong>Destination:</strong> 
+                <strong>{t('analytics.destination')}:</strong> 
                 <a href={urlData.long_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 dark:text-blue-400 ml-2 break-all">
                   {urlData.long_url}
                 </a>
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                <strong>Total Clicks:</strong> {urlData.clicks}
+                <strong>{t('analytics.total_clicks')}:</strong> {urlData.clicks}
               </p>
             </div>
           </div>
@@ -210,15 +212,15 @@ export function AnalyticsDetailPage() {
               </div>
               
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                No Clicks to Analyze... Yet!
+                {t('dashboard.no_clicks_analyze')}
               </h3>
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                Share your short link to start gathering insights about your audience and their behavior.
+                {t('dashboard.no_clicks_description')}
               </p>
               
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-6">
                 <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                  Your Link:
+                  {t('dashboard.your_link')}:
                 </h4>
                 <code className="text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-3 py-2 text-blue-600 dark:text-blue-400 break-all">
                   {shortUrl}
@@ -228,15 +230,15 @@ export function AnalyticsDetailPage() {
               <div className="text-sm text-gray-500 dark:text-gray-400 space-y-2">
                 <p className="flex items-center justify-center space-x-2">
                   <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                  <span>Real-time click tracking</span>
+                  <span>{t('dashboard.real_time_tracking')}</span>
                 </p>
                 <p className="flex items-center justify-center space-x-2">
                   <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                  <span>Geographic insights</span>
+                  <span>{t('dashboard.geographic_insights')}</span>
                 </p>
                 <p className="flex items-center justify-center space-x-2">
                   <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-                  <span>Device & browser analytics</span>
+                  <span>{t('dashboard.device_analytics')}</span>
                 </p>
               </div>
             </div>
@@ -250,7 +252,7 @@ export function AnalyticsDetailPage() {
               <div className="flex items-center space-x-2 mb-4">
                 <MapPin className="h-5 w-5 text-blue-600" />
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Geographic Distribution
+                  {t('analytics.geographic_distribution')}
                 </h2>
               </div>
               <div className="h-80 lg:h-96 rounded-lg overflow-hidden">
@@ -286,7 +288,7 @@ export function AnalyticsDetailPage() {
                 <div className="flex items-center space-x-2 mb-4">
                   <Monitor className="h-5 w-5 text-green-600" />
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    Browsers
+                    {t('analytics.browsers')}
                   </h2>
                 </div>
                 <div className="h-48 lg:h-56 flex items-center justify-center">
@@ -299,7 +301,7 @@ export function AnalyticsDetailPage() {
                 <div className="flex items-center space-x-2 mb-4">
                   <Globe className="h-5 w-5 text-purple-600" />
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    Countries
+                    {t('analytics.countries')}
                   </h2>
                 </div>
                 <div className="h-48 lg:h-56">
@@ -325,7 +327,7 @@ export function AnalyticsDetailPage() {
               <div className="flex items-center space-x-2 mb-4">
                 <Calendar className="h-5 w-5 text-orange-600" />
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Recent Clicks
+                  {t('analytics.recent_clicks')}
                 </h2>
               </div>
               <div className="overflow-x-auto">
@@ -333,16 +335,16 @@ export function AnalyticsDetailPage() {
                   <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Time
+                        {t('analytics.time')}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Location
+                        {t('analytics.location')}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Browser
+                        {t('analytics.browser')}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Device
+                        {t('analytics.device')}
                       </th>
                     </tr>
                   </thead>
@@ -355,14 +357,14 @@ export function AnalyticsDetailPage() {
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                           {(() => {
                             const location = [click.city, click.country].filter(Boolean).join(', ')
-                            return location || 'Unknown'
+                            return location || t('analytics.unknown')
                           })()}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                          {(click.browser_name || 'Unknown')} on {(click.os_name || 'Unknown')}
+                          {(click.browser_name || t('analytics.unknown'))} on {(click.os_name || t('analytics.unknown'))}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                          {click.device_type || 'Unknown'}
+                          {click.device_type || t('analytics.unknown')}
                         </td>
                       </tr>
                     ))}

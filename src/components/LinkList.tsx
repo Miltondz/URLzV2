@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ExternalLink, BarChart3, Calendar, Copy, Trash2, Eye, Shield, Search, ChevronLeft, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, QrCode, Download, Share2, X } from 'lucide-react'
 import { ConfirmDialog } from './ConfirmDialog'
 import { LinkPreviewModal } from './LinkPreviewModal'
@@ -27,6 +28,7 @@ type SortDirection = 'asc' | 'desc'
 const ITEMS_PER_PAGE = 10
 
 export function LinkList({ links, refetchStats }: LinkListProps) {
+  const { t } = useTranslation()
   const showHeader = true
   const [localLinks, setLocalLinks] = useState<LinkData[]>(links)
   const [isLoading, setIsLoading] = useState(true)
@@ -427,10 +429,10 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
         {showHeader && (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
-              Your Links
+              {t('links.your_links')}
             </h2>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              {filteredLinks.length} {filteredLinks.length === 1 ? 'link' : 'links'}
+              {filteredLinks.length} {filteredLinks.length === 1 ? t('links.link') : t('links.links')}
               {searchTerm && ` (filtered from ${localLinks.length})`}
             </span>
           </div>
@@ -444,7 +446,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
             </div>
             <input
               type="text"
-              placeholder="Search links by URL, short code, or custom slug..."
+              placeholder={t('links.search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
@@ -455,13 +457,13 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
         {/* Error Message */}
         {error && (
           <div className="mb-6 bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-4 rounded-lg">
-            <p className="font-medium">Error loading links</p>
+            <p className="font-medium">{t('dashboard.error_loading')}</p>
             <p className="text-sm mt-1">{error}</p>
             <button 
               onClick={refetchStats}
               className="mt-2 text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
             >
-              Retry
+              {t('dashboard.retry')}
             </button>
           </div>
         )}
@@ -472,26 +474,26 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
               <>
                 <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                  No links found
+                  {t('links.no_links_found')}
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-4">
-                  No links match your search for "{searchTerm}"
+                  {t('links.no_links_match_search')} "{searchTerm}"
                 </p>
                 <button
                   onClick={() => setSearchTerm('')}
                   className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
                 >
-                  Clear search
+                  {t('links.clear_search')}
                 </button>
               </>
             ) : (
               <>
                 <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                  No links yet
+                  {t('dashboard.no_links_yet')}
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400">
-                  Create your first shortened URL to get started.
+                  {t('dashboard.no_links_description')}
                 </p>
               </>
             )}
@@ -505,17 +507,17 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                   <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[200px]">
-                        Original URL
+                        {t('links.original_url')}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px]">
-                        Short Code
+                        {t('links.short_code')}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[80px]">
                         <button
                           onClick={() => handleSort('clicks')}
                           className="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100 transition-colors"
                         >
-                          <span>Clicks</span>
+                          <span>{t('links.clicks')}</span>
                           {getSortIcon('clicks')}
                         </button>
                       </th>
@@ -524,12 +526,12 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           onClick={() => handleSort('created_at')}
                           className="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100 transition-colors"
                         >
-                          <span>Created</span>
+                          <span>{t('links.created')}</span>
                           {getSortIcon('created_at')}
                         </button>
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px]">
-                        Actions
+                        {t('links.actions')}
                       </th>
                     </tr>
                   </thead>
@@ -583,14 +585,14 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                             <Link
                               to={`/dashboard/analytics/${link.id}`}
                               className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                              title="View analytics"
+                              title={t('links.view_analytics')}
                             >
                               <BarChart3 className="h-4 w-4" />
                             </Link>
                             <button
                               onClick={() => copyToClipboard(`${import.meta.env.VITE_APP_URL || window.location.origin}/r/${code}`)}
                               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                              title="Copy to clipboard"
+                              title={t('links.copy_to_clipboard')}
                             >
                               <Copy className="h-4 w-4" />
                             </button>
@@ -615,7 +617,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                             <button
                               onClick={() => openQRCodeModal(link)}
                               className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-                              title="View QR Code"
+                              title={t('links.view_qr_code')}
                             >
                               <QrCode className="h-4 w-4" />
                             </button>
@@ -623,7 +625,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                               onClick={() => openDeleteDialog(link.id, link.long_url)}
                               disabled={deletingId === link.id}
                               className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                              title="Delete link"
+                              title={t('links.delete_link')}
                             >
                               {deletingId === link.id ? (
                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
@@ -659,7 +661,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                   <div className="space-y-3">
                     <div>
                       <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                        Original URL
+                        {t('links.original_url')}
                       </label>
                       <div className="flex items-center space-x-2 mt-1">
                         <ExternalLink className="h-4 w-4 text-gray-400 flex-shrink-0" />
@@ -677,7 +679,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                     
                     <div>
                       <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                        Short Code
+                        {t('links.short_code')}
                       </label>
                       <div className="flex items-center space-x-2 mt-1">
                         <a
@@ -695,7 +697,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                         <button
                           onClick={() => openPreviewModal(link.long_url)}
                           className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 p-1"
-                          title="Preview link"
+                          title={t('links.preview_link')}
                         >
                           <Eye className="h-4 w-4" />
                         </button>
@@ -709,7 +711,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                         <button
                           onClick={() => copyToClipboard(`${import.meta.env.VITE_APP_URL || window.location.origin}/r/${code}`)}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
-                          title="Copy to clipboard"
+                          title={t('links.copy_to_clipboard')}
                         >
                           <Copy className="h-4 w-4" />
                         </button>
@@ -719,7 +721,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                     <div className="flex items-center justify-between">
                       <div>
                         <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Clicks
+                          {t('links.clicks')}
                         </label>
                         <div className="mt-1">
                           <Link
@@ -732,7 +734,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                       </div>
                       <div className="text-right">
                         <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Created
+                          {t('links.created')}
                         </label>
                         <div className="flex items-center space-x-1 mt-1 text-sm text-gray-500 dark:text-gray-400">
                           <Calendar className="h-4 w-4" />
@@ -748,7 +750,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors text-sm"
                         >
                           <QrCode className="h-4 w-4" />
-                          <span>View QR Code</span>
+                          <span>{t('links.view_qr_code')}</span>
                         </button>
                         <button
                           onClick={() => openDeleteDialog(link.id, link.long_url)}
@@ -760,7 +762,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           ) : (
                             <Trash2 className="h-4 w-4" />
                           )}
-                          <span>{deletingId === link.id ? 'Deleting...' : 'Delete Link'}</span>
+                          <span>{deletingId === link.id ? t('links.deleting') : t('links.delete_link')}</span>
                         </button>
                       </div>
                     </div>
@@ -780,10 +782,10 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
       {/* Custom Confirmation Dialog */}
       <ConfirmDialog
         isOpen={deleteDialog.isOpen}
-        title="Delete Link"
-        message={`Are you sure you want to delete this link? This action cannot be undone.`}
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t('links.delete_link')}
+        message={t('links.delete_confirmation')}
+        confirmText={t('links.delete')}
+        cancelText={t('links.cancel')}
         onConfirm={deleteLink}
         onCancel={closeDeleteDialog}
         isLoading={deletingId === deleteDialog.linkId}
@@ -810,7 +812,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                 <div className="flex items-center space-x-3">
                   <QrCode className="h-5 w-5 text-blue-600" />
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    QR Code
+                    {t('qr.title')}
                   </h3>
                 </div>
                 <button
@@ -846,11 +848,11 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
 
                 {/* Link Info */}
                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Short URL:</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('analytics.short_url')}:</p>
                   <p className="text-sm text-blue-600 dark:text-blue-400 break-all font-mono">
                     {`${window.location.origin}/${qrCodeModal.link.custom_slug || qrCodeModal.link.short_code}`}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 mt-2">Destination:</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 mt-2">{t('analytics.destination')}:</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400 break-all">
                     {qrCodeModal.link.long_url}
                   </p>
@@ -864,7 +866,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                       className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
                     >
                       <Download className="h-4 w-4" />
-                      <span>Download PNG</span>
+                      <span>{t('qr.download_qr')}</span>
                     </button>
                     
                     <button
@@ -872,7 +874,7 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                       className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
                     >
                       <Share2 className="h-4 w-4" />
-                      <span>Share</span>
+                      <span>{t('qr.share')}</span>
                     </button>
                   </div>
                 )}
@@ -904,12 +906,12 @@ export function LinkList({ links, refetchStats }: LinkListProps) {
                           refetchStats()
                         } catch (error) {
                           console.error('Failed to generate QR code:', error)
-                          alert('Failed to generate QR code. Please try again.')
+                          alert(t('errors.generic'))
                         }
                       }}
                       className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
                     >
-                      Generate QR Code
+                      {t('qr.generate_qr_code')}
                     </button>
                   </div>
                 )}

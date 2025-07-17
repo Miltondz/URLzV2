@@ -58,6 +58,7 @@
     "no_links_description": "Create your first shortened URL to get started.",
     "no_clicks_analyze": "No Clicks to Analyze... Yet!",
     "no_clicks_description": "Share your short link to start gathering insights about your audience and their behavior.",
+    "most_active_links": "Most Active Links",
     "your_link": "Your Link:",
     "real_time_tracking": "Real-time click tracking",
     "geographic_insights": "Geographic insights",
@@ -68,6 +69,8 @@
   "links": {
     "original_url": "Original URL",
     "short_code": "Short Code",
+    "link": "link",
+    "links": "links",
     "clicks": "Clicks",
     "created": "Created",
     "actions": "Actions",
@@ -78,6 +81,7 @@
     "copy_to_clipboard": "Copy to clipboard",
     "preview_link": "Preview link",
     "view_analytics": "View analytics",
+    "your_links": "Your Links",
     "view_qr_code": "View QR Code",
     "delete_link": "Delete link",
     "deleting": "Deleting...",
@@ -101,6 +105,7 @@
     "device": "Device",
     "unknown": "Unknown",
     "loading_analytics": "Loading analytics..."
+  },
   },
   "auth": {
     "welcome_title": "Welcome to urlz.lat",
@@ -143,9 +148,116 @@
     },
     "ready_to_start": "Ready to Get Started?",
     "ready_subtitle": "Join thousands of users who trust urlz.lat for their link management needs. Start shortening and tracking your URLs today.",
+    "subtitle": "Discover all the tools and capabilities that make urlz.lat the perfect choice for your link management needs.",
+    "smart_shortening": {
+      "title": "Smart URL Shortening",
+      "description": "Create short, memorable links instantly with our advanced algorithm that generates unique codes."
+    },
+    "real_time_analytics": {
+      "title": "Real-Time Analytics",
+      "description": "Track clicks, analyze audience behavior, and get detailed insights with interactive charts and maps."
+    },
+    "custom_branded_links": {
+      "title": "Custom Branded Links",
+      "description": "Create custom slugs that reflect your brand and make your links more memorable and trustworthy."
+    },
+    "url_safety": {
+      "title": "URL Safety Verification",
+      "description": "Automatic URL safety checking using Google Safe Browsing API to protect users from malicious links."
+    },
+    "qr_generation": {
+      "title": "QR Code Generation",
+      "description": "Automatically generate QR codes for all your links with download and sharing capabilities."
+    },
+    "link_preview": {
+      "title": "Link Preview",
+      "description": "Safe preview of destination URLs before clicking, showing page title, description, and favicon."
+    },
+    "mobile_optimized": {
+      "title": "Mobile Optimized",
+      "description": "Fully responsive design that works perfectly on all devices, from desktop to mobile."
+    },
+    "link_management": {
+      "title": "Link Management",
+      "description": "Organize, edit, and manage all your links from a centralized dashboard with search and pagination."
+    },
+    "ready_to_start": "Ready to Get Started?",
+    "ready_subtitle": "Join thousands of users who trust urlz.lat for their link management needs. Start shortening and tracking your URLs today.",
     "view_pro_plans": "View Pro Plans"
   },
   "about": {
+    "title": "About urlz.lat",
+    "subtitle": "We're on a mission to make link sharing smarter, faster, and more insightful for everyone.",
+    "our_mission": "Our Mission",
+    "mission_text": "At urlz.lat, we believe that every link tells a story. Our platform empowers individuals and businesses to create meaningful connections through smart URL shortening, comprehensive analytics, and branded link management. We're committed to providing tools that not only shorten your links but also amplify your digital presence.",
+    "meet_founder": "Meet Our Founder",
+    "founder_name": "Milton Diaz",
+    "founder_title": "at DunaTech, creator of Urlz.lat",
+    "founder_bio_1": "With over a decade of experience in software development and digital innovation, Milton brings a unique perspective to URL management and analytics. His passion for creating tools that simplify complex processes led to the creation of urlz.lat.",
+    "founder_bio_2": "Milton's background spans full-stack development, product management, and entrepreneurship. He believes in building technology that empowers users while maintaining the highest standards of privacy and security.",
+    "founder_quote": "Every link tells a story, and our mission is to help you tell yours better. We're not just shortening URLs – we're creating connections that matter.",
+    "connect_linkedin": "Connect on LinkedIn",
+    "get_in_touch": "Get in Touch",
+    "user_centric": "User-Centric",
+    "user_centric_desc": "Every feature we build is designed with our users in mind, ensuring simplicity without sacrificing power.",
+    "excellence": "Excellence",
+    "excellence_desc": "We strive for excellence in everything we do, from our code quality to our customer support.",
+    "community": "Community",
+    "community_desc": "We're building more than a tool – we're fostering a community of creators, marketers, and innovators.",
+    "our_story": "Our Story",
+    "story_text_1": "Founded in 2024, urlz.lat emerged from a simple observation: link sharing was becoming increasingly important in our digital world, but existing solutions were either too complex or too limited.",
+    "story_text_2": "We set out to create a platform that combines the simplicity of traditional URL shorteners with the power of modern analytics and branding tools. Today, we're proud to serve thousands of users who trust us with their most important links.",
+    "year_founded": "Year Founded"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Have questions, feedback, or need support? We'd love to hear from you. Reach out and we'll get back to you as soon as possible.",
+    "contact_information": "Contact Information",
+    "email": "Email",
+    "phone": "Phone",
+    "office": "Office",
+    "response_time": "Response Time",
+    "response_time_desc": "We typically respond within 24 hours during business days.",
+    "quick_help": "Quick Help",
+    "custom_slug_help": "How do I create a custom slug?",
+    "custom_slug_answer": "Custom slugs are available with our Pro plan. Simply enter your desired slug when creating a link.",
+    "analytics_help": "Can I track my link analytics?",
+    "analytics_answer": "Yes! All users get access to basic analytics. Pro users get advanced analytics with detailed insights.",
+    "api_help": "Is there an API available?",
+    "api_answer": "API access is available for Business plan subscribers. Contact us for documentation.",
+    "send_message": "Send us a Message",
+    "message_sent": "Message sent successfully!",
+    "message_sent_desc": "We'll get back to you as soon as possible.",
+    "full_name": "Full Name",
+    "email_address": "Email Address",
+    "subject": "Subject",
+    "select_subject": "Select a subject",
+    "general_inquiry": "General Inquiry",
+    "technical_support": "Technical Support",
+    "billing_question": "Billing Question",
+    "feature_request": "Feature Request",
+    "bug_report": "Bug Report",
+    "partnership": "Partnership",
+    "message": "Message",
+    "message_placeholder": "Tell us how we can help you...",
+    "send_message_btn": "Send Message",
+    "sending": "Sending..."
+  },
+  "profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your account settings and preferences",
+    "account_settings": "Account Settings",
+    "coming_soon": "Profile Settings Coming Soon",
+    "coming_soon_desc": "We're working on bringing you comprehensive profile management features. Stay tuned for updates to customize your account settings.",
+    "subscription": "Subscription",
+    "current_plan": "Current Plan",
+    "free": "Free",
+    "upgrade_description": "Upgrade to Pro for custom slugs and advanced analytics.",
+    "upgrade_to_pro": "Upgrade to Pro",
+    "security": "Security",
+    "two_factor_auth": "Two-Factor Auth",
+    "login_history": "Login History",
+    "coming_soon_short": "Coming Soon"
     "title": "About urlz.lat",
     "subtitle": "We're on a mission to make link sharing smarter, faster, and more insightful for everyone.",
     "our_mission": "Our Mission",
@@ -359,6 +471,7 @@
     "generic": "An error occurred. Please try again.",
     "network": "Network error. Please check your connection.",
     "unauthorized": "You are not authorized to perform this action.",
+    "not_found": "The requested resource was not found.",
     "forbidden": "Access denied.",
     "not_found": "The requested resource was not found.",
     "server_error": "Server error. Please try again later.",

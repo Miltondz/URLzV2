@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock } from 'lucide-react'
 
 export function Contact() {
+  const { t } = useTranslation()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -39,10 +41,10 @@ export function Contact() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            Get in Touch
+            {t('contact.title')}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Have questions, feedback, or need support? We'd love to hear from you. Reach out and we'll get back to you as soon as possible.
+            {t('contact.subtitle')}
           </p>
         </div>
 
@@ -51,7 +53,7 @@ export function Contact() {
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                Contact Information
+                {t('contact.contact_information')}
               </h2>
               
               <div className="space-y-6">
@@ -62,7 +64,7 @@ export function Contact() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Email</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('contact.email')}</h3>
                     <p className="text-gray-600 dark:text-gray-400">support@urlz.lat</p>
                     <p className="text-gray-600 dark:text-gray-400">hello@urlz.lat</p>
                   </div>
@@ -75,7 +77,7 @@ export function Contact() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Phone</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('contact.phone')}</h3>
                     <p className="text-gray-600 dark:text-gray-400">+1 (555) 123-4567</p>
                     <p className="text-sm text-gray-500 dark:text-gray-500">Mon-Fri 9AM-6PM EST</p>
                   </div>
@@ -88,7 +90,7 @@ export function Contact() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Office</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('contact.office')}</h3>
                     <p className="text-gray-600 dark:text-gray-400">
                       123 Tech Street<br />
                       San Francisco, CA 94105<br />
@@ -104,9 +106,9 @@ export function Contact() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Response Time</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('contact.response_time')}</h3>
                     <p className="text-gray-600 dark:text-gray-400">
-                      We typically respond within 24 hours during business days.
+                      {t('contact.response_time_desc')}
                     </p>
                   </div>
                 </div>
@@ -116,31 +118,31 @@ export function Contact() {
             {/* FAQ Section */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mt-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                Quick Help
+                {t('contact.quick_help')}
               </h2>
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                    How do I create a custom slug?
+                    {t('contact.custom_slug_help')}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Custom slugs are available with our Pro plan. Simply enter your desired slug when creating a link.
+                    {t('contact.custom_slug_answer')}
                   </p>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                    Can I track my link analytics?
+                    {t('contact.analytics_help')}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Yes! All users get access to basic analytics. Pro users get advanced analytics with detailed insights.
+                    {t('contact.analytics_answer')}
                   </p>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                    Is there an API available?
+                    {t('contact.api_help')}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    API access is available for Business plan subscribers. Contact us for documentation.
+                    {t('contact.api_answer')}
                   </p>
                 </div>
               </div>
@@ -153,14 +155,14 @@ export function Contact() {
               <div className="flex items-center mb-6">
                 <MessageCircle className="h-6 w-6 text-blue-600 mr-3" />
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Send us a Message
+                  {t('contact.send_message')}
                 </h2>
               </div>
 
               {submitted && (
                 <div className="mb-6 bg-green-100 dark:bg-green-900/50 border border-green-300 dark:border-green-700 text-green-700 dark:text-green-300 p-4 rounded-lg">
-                  <p className="font-medium">Message sent successfully!</p>
-                  <p className="text-sm mt-1">We'll get back to you as soon as possible.</p>
+                  <p className="font-medium">{t('contact.message_sent')}</p>
+                  <p className="text-sm mt-1">{t('contact.message_sent_desc')}</p>
                 </div>
               )}
 
@@ -168,7 +170,7 @@ export function Contact() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Full Name *
+                      {t('contact.full_name')} *
                     </label>
                     <input
                       type="text"
@@ -183,7 +185,7 @@ export function Contact() {
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Email Address *
+                      {t('contact.email_address')} *
                     </label>
                     <input
                       type="email"
@@ -200,7 +202,7 @@ export function Contact() {
 
                 <div>
                   <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Subject *
+                    {t('contact.subject')} *
                   </label>
                   <select
                     id="subject"
@@ -210,19 +212,19 @@ export function Contact() {
                     required
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
                   >
-                    <option value="">Select a subject</option>
-                    <option value="general">General Inquiry</option>
-                    <option value="support">Technical Support</option>
-                    <option value="billing">Billing Question</option>
-                    <option value="feature">Feature Request</option>
-                    <option value="bug">Bug Report</option>
-                    <option value="partnership">Partnership</option>
+                    <option value="">{t('contact.select_subject')}</option>
+                    <option value="general">{t('contact.general_inquiry')}</option>
+                    <option value="support">{t('contact.technical_support')}</option>
+                    <option value="billing">{t('contact.billing_question')}</option>
+                    <option value="feature">{t('contact.feature_request')}</option>
+                    <option value="bug">{t('contact.bug_report')}</option>
+                    <option value="partnership">{t('contact.partnership')}</option>
                   </select>
                 </div>
 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Message *
+                    {t('contact.message')} *
                   </label>
                   <textarea
                     id="message"
@@ -232,7 +234,7 @@ export function Contact() {
                     required
                     rows={6}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors resize-none"
-                    placeholder="Tell us how we can help you..."
+                    placeholder={t('contact.message_placeholder')}
                   />
                 </div>
 
@@ -244,12 +246,12 @@ export function Contact() {
                   {isSubmitting ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Sending...</span>
+                      <span>{t('contact.sending')}</span>
                     </>
                   ) : (
                     <>
                       <Send className="h-5 w-5" />
-                      <span>Send Message</span>
+                      <span>{t('contact.send_message_btn')}</span>
                     </>
                   )}
                 </button>

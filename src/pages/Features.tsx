@@ -1,55 +1,58 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link2, BarChart3, Shield, Zap, Globe, Crown, Smartphone, Clock, Eye, QrCode } from 'lucide-react'
 
 export function Features() {
+  const { t } = useTranslation()
+  
   const features = [
     {
       icon: Link2,
-      title: 'Smart URL Shortening',
-      description: 'Create short, memorable links instantly with our advanced algorithm that generates unique codes.',
+      title: t('features.smart_shortening.title'),
+      description: t('features.smart_shortening.description'),
       color: 'blue'
     },
     {
       icon: BarChart3,
-      title: 'Real-Time Analytics',
-      description: 'Track clicks, analyze audience behavior, and get detailed insights with interactive charts and maps.',
+      title: t('features.real_time_analytics.title'),
+      description: t('features.real_time_analytics.description'),
       color: 'green'
     },
     {
       icon: Crown,
-      title: 'Custom Branded Links',
-      description: 'Create custom slugs that reflect your brand and make your links more memorable and trustworthy.',
+      title: t('features.custom_branded_links.title'),
+      description: t('features.custom_branded_links.description'),
       color: 'purple',
       isPro: true
     },
     {
       icon: Shield,
-      title: 'URL Safety Verification',
-      description: 'Automatic URL safety checking using Google Safe Browsing API to protect users from malicious links.',
+      title: t('features.url_safety.title'),
+      description: t('features.url_safety.description'),
       color: 'red'
     },
     {
       icon: QrCode,
-      title: 'QR Code Generation',
-      description: 'Automatically generate QR codes for all your links with download and sharing capabilities.',
+      title: t('features.qr_generation.title'),
+      description: t('features.qr_generation.description'),
       color: 'indigo'
     },
     {
       icon: Eye,
-      title: 'Link Preview',
-      description: 'Safe preview of destination URLs before clicking, showing page title, description, and favicon.',
+      title: t('features.link_preview.title'),
+      description: t('features.link_preview.description'),
       color: 'yellow'
     },
     {
       icon: Smartphone,
-      title: 'Mobile Optimized',
-      description: 'Fully responsive design that works perfectly on all devices, from desktop to mobile.',
+      title: t('features.mobile_optimized.title'),
+      description: t('features.mobile_optimized.description'),
       color: 'pink'
     },
     {
       icon: Clock,
-      title: 'Link Management',
-      description: 'Organize, edit, and manage all your links from a centralized dashboard with search and pagination.',
+      title: t('features.link_management.title'),
+      description: t('features.link_management.description'),
       color: 'teal'
     }
   ]
@@ -74,10 +77,10 @@ export function Features() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            Powerful Features
+            {t('features.title')}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Discover all the tools and capabilities that make urlz.lat the perfect choice for your link management needs.
+            {t('features.subtitle')}
           </p>
         </div>
 
@@ -92,7 +95,7 @@ export function Features() {
                 {feature.isPro && (
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
                     <Crown className="h-3 w-3 mr-1" />
-                    PRO
+                    {t('shortener.pro_feature')}
                   </span>
                 )}
               </div>
@@ -109,23 +112,23 @@ export function Features() {
         {/* Call to Action */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Get Started?
+            {t('features.ready_to_start')}
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of users who trust urlz.lat for their link management needs. Start shortening and tracking your URLs today.
+            {t('features.ready_subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/login"
               className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold text-lg rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Create Free Account
+              {t('hero.create_free_account')}
             </a>
             <a
               href="/dashboard"
               className="inline-flex items-center px-8 py-4 bg-blue-700 hover:bg-blue-800 text-white font-semibold text-lg rounded-lg transition-colors"
             >
-              Go to Dashboard
+              {t('hero.go_to_dashboard')}
             </a>
           </div>
         </div>

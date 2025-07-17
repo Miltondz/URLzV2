@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import Papa from 'papaparse'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { ShortenerForm } from '../components/ShortenerForm'
@@ -25,6 +26,7 @@ interface Link {
 
 export function Dashboard() {
   const { user, loading: authLoading } = useAuth()
+  const { t } = useTranslation()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [topLinks, setTopLinks] = useState<Link[]>([])
   const [allLinks, setAllLinks] = useState<Link[]>([])
@@ -130,7 +132,7 @@ export function Dashboard() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t('common.loading')}</p>
         </div>
       </div>
     )
@@ -141,8 +143,8 @@ export function Dashboard() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 dark:text-red-400 mb-4">Authentication required</p>
-          <a href="/login" className="text-blue-600 hover:text-blue-800">Go to Login</a>
+          <p className="text-red-600 dark:text-red-400 mb-4">{t('errors.unauthorized')}</p>
+          <a href="/login" className="text-blue-600 hover:text-blue-800">{t('nav.login')}</a>
         </div>
       </div>
     )
@@ -156,17 +158,17 @@ export function Dashboard() {
           {/* Header */}
           <div className="mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Dashboard
+              {t('dashboard.title')}
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Create and manage your shortened URLs
+              {t('dashboard.subtitle')}
             </p>
           </div>
 
           {/* Error Message */}
           {error && (
             <div className="mb-6 bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 p-4 rounded-lg">
-              <p className="font-medium">Error loading dashboard</p>
+              <p className="font-medium">{t('dashboard.error_loading')}</p>
               <p className="text-sm mt-1">{error}</p>
               <button 
                 onClick={() => {
@@ -175,7 +177,7 @@ export function Dashboard() {
                 }}
                 className="mt-2 text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
               >
-                Retry
+                {t('dashboard.retry')}
               </button>
             </div>
           )}
@@ -263,7 +265,7 @@ export function Dashboard() {
                 <Link2 className="h-6 w-6 text-blue-500" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Links</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.total_links')}</p>
                 {loading ? (
                   <div className="animate-pulse">
                     <div className="h-6 sm:h-8 bg-gray-200 dark:bg-gray-700 rounded w-16 mt-1"></div>
@@ -284,7 +286,7 @@ export function Dashboard() {
                 <BarChart3 className="h-6 w-6 text-green-500" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Clicks</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.total_clicks')}</p>
                 {loading ? (
                   <div className="animate-pulse">
                     <div className="h-6 sm:h-8 bg-gray-200 dark:bg-gray-700 rounded w-16 mt-1"></div>
@@ -305,7 +307,7 @@ export function Dashboard() {
                 <TrendingUp className="h-6 w-6 text-indigo-500" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Clicks</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.avg_clicks')}</p>
                 {loading ? (
                   <div className="animate-pulse">
                     <div className="h-6 sm:h-8 bg-gray-200 dark:bg-gray-700 rounded w-16 mt-1"></div>

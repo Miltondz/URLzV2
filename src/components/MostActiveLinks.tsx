@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { TrendingUp, ExternalLink, BarChart3 } from 'lucide-react'
 
 
@@ -7,6 +8,8 @@ interface MostActiveLinksProps {
 }
 
 export function MostActiveLinks({ links }: MostActiveLinksProps) {
+  const { t } = useTranslation()
+  
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text)
@@ -20,7 +23,7 @@ export function MostActiveLinks({ links }: MostActiveLinksProps) {
       <div className="flex items-center space-x-2 mb-4">
         <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Most Active Links
+          {t('dashboard.most_active_links')}
         </h2>
       </div>
 
@@ -28,7 +31,7 @@ export function MostActiveLinks({ links }: MostActiveLinksProps) {
         <div className="text-center py-8">
           <BarChart3 className="h-8 w-8 text-gray-400 mx-auto mb-2" />
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            No links with clicks yet. Create some links to see your top performers!
+            {t('dashboard.no_clicks_analyze')}
           </p>
         </div>
       ) : (
@@ -92,7 +95,7 @@ export function MostActiveLinks({ links }: MostActiveLinksProps) {
 
                 {/* Creation Date */}
                 <div className="text-xs text-gray-400 dark:text-gray-500">
-                  Created {new Date(link.created_at).toLocaleDateString('en-US', {
+                  {t('links.created')} {new Date(link.created_at).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric'
                   })}
