@@ -333,6 +333,7 @@ export function Home() {
                           </p>
                         </div>
                       </div>
+                    )}
                     <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
                   </div>
                 </div>
