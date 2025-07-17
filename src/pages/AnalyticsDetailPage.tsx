@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { ArrowLeft, Globe, Monitor, MapPin, Calendar } from 'lucide-react'
+import { ArrowLeft, Globe, Monitor, MapPin, Calendar, BarChart3 } from 'lucide-react'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js'
 import { Pie, Bar } from 'react-chartjs-2'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
@@ -199,20 +199,54 @@ export function AnalyticsDetailPage() {
 
         {clicksData.length === 0 ? (
           <div className="col-span-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-12 text-center">
-            <Globe className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              No Analytics Data Yet
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400">
-              Share your link to start collecting detailed analytics data.
-            </p>
+            <div className="max-w-md mx-auto">
+              <div className="relative mb-8">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full"></div>
+                </div>
+                <div className="relative flex items-center justify-center">
+                  <BarChart3 className="h-20 w-20 text-blue-500 dark:text-blue-400" />
+                </div>
+              </div>
+              
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                No Clicks to Analyze... Yet!
+              </h3>
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                Share your short link to start gathering insights about your audience and their behavior.
+              </p>
+              
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-6">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  Your Link:
+                </h4>
+                <code className="text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-3 py-2 text-blue-600 dark:text-blue-400 break-all">
+                  {shortUrl}
+                </code>
+              </div>
+              
+              <div className="text-sm text-gray-500 dark:text-gray-400 space-y-2">
+                <p className="flex items-center justify-center space-x-2">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span>Real-time click tracking</span>
+                </p>
+                <p className="flex items-center justify-center space-x-2">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  <span>Geographic insights</span>
+                </p>
+                <p className="flex items-center justify-center space-x-2">
+                  <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                  <span>Device & browser analytics</span>
+                </p>
+              </div>
+            </div>
           </div>
         ) : (
           <>
             {/* Main Content Grid - Two Columns on Desktop */}
             <div className="col-span-1 grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
               {/* Left Column - Geographic Map (60% width) */}
-              <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+              <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl">
               <div className="flex items-center space-x-2 mb-4">
                 <MapPin className="h-5 w-5 text-blue-600" />
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -248,7 +282,7 @@ export function AnalyticsDetailPage() {
               {/* Right Column - Charts (40% width) */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Browser Chart */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl">
                 <div className="flex items-center space-x-2 mb-4">
                   <Monitor className="h-5 w-5 text-green-600" />
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -261,7 +295,7 @@ export function AnalyticsDetailPage() {
               </div>
 
                 {/* Country Chart */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl">
                 <div className="flex items-center space-x-2 mb-4">
                   <Globe className="h-5 w-5 text-purple-600" />
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -287,7 +321,7 @@ export function AnalyticsDetailPage() {
             </div>
 
             {/* Bottom Row - Recent Clicks Table (Full Width) */}
-            <div className="col-span-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div className="col-span-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl">
               <div className="flex items-center space-x-2 mb-4">
                 <Calendar className="h-5 w-5 text-orange-600" />
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -314,7 +348,7 @@ export function AnalyticsDetailPage() {
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {clicksData.slice(0, 10).map((click) => (
-                      <tr key={click.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={click.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <td className="px-4 py-3 text-sm text-gray-900 dark:text-white">
                           {new Date(click.created_at).toLocaleString()}
                         </td>
