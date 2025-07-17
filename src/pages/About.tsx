@@ -55,7 +55,7 @@ export function About() {
               <div className="space-y-4">
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    Ivan Weiss
+                    Milton Diaz
                   </h3>
                   <p className="text-blue-600 dark:text-blue-400 font-medium mb-3">
                     Founder & CEO at urlz.lat
@@ -64,13 +64,13 @@ export function About() {
 
                 <div className="prose prose-lg dark:prose-invert max-w-none">
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-                    With over a decade of experience in software development and digital innovation, Ivan brings a unique 
+                    With over a decade of experience in software development and digital innovation, Milton brings a unique 
                     perspective to URL management and analytics. His passion for creating tools that simplify complex 
                     processes led to the creation of urlz.lat.
                   </p>
                   
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-                    Ivan's background spans full-stack development, product management, and entrepreneurship. He believes 
+                    Milton's background spans full-stack development, product management, and entrepreneurship. He believes 
                     in building technology that empowers users while maintaining the highest standards of privacy and security.
                   </p>
 
@@ -82,7 +82,7 @@ export function About() {
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <a
-                    href="https://www.linkedin.com/in/ivan-weiss-dev/"
+                    href="https://www.linkedin.com/in/milton-diaz/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors space-x-2"
@@ -94,7 +94,7 @@ export function About() {
                   </a>
                   
                   <a
-                    href="mailto:ivan@urlz.lat"
+                    href="mailto:milton@urlz.lat"
                     className="inline-flex items-center px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 font-medium rounded-lg transition-colors space-x-2"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
