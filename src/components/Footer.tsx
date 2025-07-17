@@ -1,8 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Link as LinkIcon, Twitter, Instagram, Music } from 'lucide-react'
 
 export function Footer() {
+  const { t } = useTranslation()
+  
   return (
     <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -16,7 +19,7 @@ export function Footer() {
               </span>
             </div>
             <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-              Smart URL shortening made simple. Create, track, and optimize your links with powerful analytics and branded customization.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4">
               <a
@@ -52,7 +55,7 @@ export function Footer() {
           {/* Product Links */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-              Product
+              {t('footer.product')}
             </h3>
             <ul className="space-y-3">
               <li>
@@ -60,7 +63,7 @@ export function Footer() {
                   to="/features"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
-                  Features
+                  {t('nav.features')}
                 </Link>
               </li>
               <li>
@@ -68,7 +71,7 @@ export function Footer() {
                   to="/dashboard"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
               </li>
             </ul>
@@ -77,7 +80,7 @@ export function Footer() {
           {/* Company Links */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-              Company
+              {t('footer.company')}
             </h3>
             <ul className="space-y-3">
               <li>
@@ -85,7 +88,7 @@ export function Footer() {
                   to="/about"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
-                  About Us
+                  {t('nav.about')}
                 </Link>
               </li>
               <li>
@@ -93,7 +96,7 @@ export function Footer() {
                   to="/contact"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
-                  Contact
+                  {t('nav.contact')}
                 </Link>
               </li>
             </ul>
@@ -102,7 +105,7 @@ export function Footer() {
           {/* Support Links */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-              Support
+              {t('footer.support')}
             </h3>
             <ul className="space-y-3">
               <li>
@@ -110,7 +113,7 @@ export function Footer() {
                   to="/transparency"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
-                  Transparency
+                  {t('footer.transparency')}
                 </Link>
               </li>
               <li>
@@ -118,7 +121,7 @@ export function Footer() {
                   href="/privacy"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
-                  Privacy Policy
+                  {t('footer.privacy_policy')}
                 </a>
               </li>
               <li>
@@ -126,7 +129,7 @@ export function Footer() {
                   href="/terms"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
-                  Terms of Service
+                  {t('footer.terms_of_service')}
                 </a>
               </li>
               <li>
@@ -134,7 +137,7 @@ export function Footer() {
                   href="/status"
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
                 >
-                  Status Page
+                  {t('footer.status_page')}
                 </a>
               </li>
             </ul>
@@ -145,26 +148,26 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              © {new Date().getFullYear()} DunaTech. All rights reserved.
+              © {new Date().getFullYear()} DunaTech. {t('footer.rights_reserved')}
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a
                 href="#"
                 className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
               >
-                Privacy
+                {t('footer.privacy')}
               </a>
               <a
                 href="#"
                 className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
               >
-                Terms
+                {t('footer.terms')}
               </a>
               <a
                 href="#"
                 className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm"
               >
-                Cookies
+                {t('footer.cookies')}
               </a>
             </div>
           </div>

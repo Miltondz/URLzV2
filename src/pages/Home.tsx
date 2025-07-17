@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import { GlobeDemo } from '../components/ui/globe-demo'
 import { QRCodeGenerator } from '../components/QRCodeGenerator'
@@ -10,6 +11,7 @@ import { QRCodeSVG } from 'qrcode.react'
 
 export function Home() {
   const { user } = useAuth()
+  const { t } = useTranslation()
   const [longUrl, setLongUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [newLink, setNewLink] = useState<string>('')
@@ -88,13 +90,13 @@ export function Home() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div>
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white mb-8">
-              Short links,
+              {t('hero.title')}
               <br />
-              <span className="text-blue-600">big results.</span>
+              <span className="text-blue-600">{t('hero.title_highlight')}</span>
             </h1>
           
             <p className="text-xl sm:text-2xl text-gray-200 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
-              Create powerful short links that drive engagement and deliver insights.
+              {t('hero.subtitle')}
             </p>
 
             {/* Anonymous URL Shortening Form */}
@@ -109,7 +111,7 @@ export function Home() {
                           type="url"
                           value={longUrl}
                           onChange={(e) => setLongUrl(e.target.value)}
-                          placeholder="https://example.com/your-long-url"
+                          placeholder={t('shortener.url_placeholder')}
                           className="w-full px-6 py-4 pr-16 text-lg text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                           required
                         />
@@ -139,7 +141,7 @@ export function Home() {
                         ) : (
                           <>
                             <Link2 className="h-5 w-5" />
-                            <span>Shorten URL</span>
+                            <span>{t('shortener.shorten_url')}</span>
                           </>
                         )}
                       </button>
@@ -162,7 +164,7 @@ export function Home() {
                   {newLink && (
                     <div className="mt-6 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                       <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-3">
-                        Your shortened URL:
+                        {t('shortener.your_shortened_url')}
                       </p>
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
                         <input
@@ -174,7 +176,7 @@ export function Home() {
                         {isVerified && (
                           <div className="flex items-center space-x-1 px-3 py-2 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded text-green-700 dark:text-green-300 text-sm font-medium whitespace-nowrap">
                             <Shield className="h-4 w-4" />
-                            <span>✔️ Verificado</span>
+                            <span>✔️ {t('shortener.url_verified_safe')}</span>
                           </div>
                         )}
                         <button
@@ -182,25 +184,25 @@ export function Home() {
                           className="flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium text-green-700 hover:text-green-800 dark:text-green-300 dark:hover:text-green-200 bg-white dark:bg-gray-700 border border-green-200 dark:border-green-600 rounded transition-colors whitespace-nowrap"
                         >
                           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                          <span>{copied ? 'Copied!' : 'Copy'}</span>
+                          <span>{copied ? t('shortener.copied') : t('shortener.copy')}</span>
                         </button>
                       </div>
                       <div className="mt-4 text-center">
                         <p className="text-xs text-green-700 dark:text-green-300 mb-2">
-                          ⏰ Anonymous links expire in 7 days. Create a free account for permanent links.
+                          ⏰ {t('shortener.anonymous_links_expire')}
                         </p>
                         <Link
                           to="/login"
                           className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
                         >
-                          Create Free Account →
+                          {t('shortener.create_account_arrow')}
                         </Link>
                       </div>
                     </div>
                   )}
 
                   <p className="mt-6 text-sm text-gray-300 dark:text-gray-400 text-center">
-                    Anonymous links expire in 7 days. Create a free account for permanent links.
+                    {t('shortener.anonymous_links_expire')}
                   </p>
                 </div>
 
@@ -208,10 +210,10 @@ export function Home() {
                 <div className="bg-white/10 dark:bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 border border-white/20 dark:border-gray-700/20">
                   <div className="text-center mb-6">
                     <h3 className="text-2xl font-bold text-white mb-2">
-                      Instant QR Code Generator
+                      {t('qr.title')}
                     </h3>
                     <p className="text-blue-100 text-lg">
-                      Visualize your link instantly. Create scannable codes for menus, flyers, and business cards.
+                      {t('qr.subtitle')}
                     </p>
                   </div>
                   
@@ -233,7 +235,7 @@ export function Home() {
                   to="/dashboard"
                   className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg rounded-lg transition-colors space-x-2"
                 >
-                  <span>Go to Dashboard</span>
+                  <span>{t('hero.go_to_dashboard')}</span>
                   <ArrowRight className="h-5 w-5" />
                 </Link>
               </div>
@@ -247,10 +249,10 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Why Create an Account?
+              {t('home.why_sign_up')}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Unlock powerful features and insights with a free urlz.lat account
+              {t('home.why_sign_up_subtitle')}
             </p>
           </div>
 
@@ -261,10 +263,10 @@ export function Home() {
                 <BarChart3 className="h-10 w-10" />
               </div>
               <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                Track Everything
+                {t('home.track_everything')}
               </h3>
               <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                Get detailed analytics on every click. See where your audience comes from, what devices they use, and when they're most active.
+                {t('home.track_everything_desc')}
               </p>
             </div>
 
@@ -274,10 +276,10 @@ export function Home() {
                 <Eye className="h-10 w-10" />
               </div>
               <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                Brand Your Links
+                {t('home.brand_your_links')}
               </h3>
               <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                Create custom, memorable links that reflect your brand. Build trust and recognition with every share.
+                {t('home.brand_your_links_desc')}
               </p>
             </div>
 
@@ -287,10 +289,10 @@ export function Home() {
                 <Smartphone className="h-10 w-10" />
               </div>
               <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                Manage with Ease
+                {t('home.manage_with_ease')}
               </h3>
               <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                Organize all your links in one dashboard. Edit, delete, and monitor performance from anywhere.
+                {t('home.manage_with_ease_desc')}
               </p>
             </div>
           </div>
@@ -300,7 +302,7 @@ export function Home() {
               to="/login"
               className="inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg rounded-lg transition-colors space-x-2"
             >
-              <span>Create Free Account</span>
+              <span>{t('hero.create_free_account')}</span>
               <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
@@ -311,27 +313,27 @@ export function Home() {
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-8">
-            Take Your Links to the Next Level with Pro
+            {t('home.go_pro_title')}
           </h2>
           
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 border border-white/20">
                 <Crown className="h-8 w-8 text-yellow-300 mb-4 mx-auto" />
-                <h3 className="text-xl font-semibold text-white mb-2">Custom Domains</h3>
-                <p className="text-blue-100">Use your own domain for maximum brand recognition</p>
+               <h3 className="text-xl font-semibold text-white mb-2">{t('home.custom_domains')}</h3>
+               <p className="text-blue-100">{t('home.custom_domains_desc')}</p>
               </div>
               
               <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 border border-white/20">
                 <QrCode className="h-8 w-8 text-yellow-300 mb-4 mx-auto" />
-                <h3 className="text-xl font-semibold text-white mb-2">QR with Logo</h3>
-                <p className="text-blue-100">Generate branded QR codes with your company logo</p>
+               <h3 className="text-xl font-semibold text-white mb-2">{t('home.qr_with_logo')}</h3>
+               <p className="text-blue-100">{t('home.qr_with_logo_desc')}</p>
               </div>
               
               <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 border border-white/20 md:col-span-2 lg:col-span-1">
                 <BarChart3 className="h-8 w-8 text-yellow-300 mb-4 mx-auto" />
-                <h3 className="text-xl font-semibold text-white mb-2">Advanced Analytics</h3>
-                <p className="text-blue-100">Deep insights with conversion tracking and A/B testing</p>
+               <h3 className="text-xl font-semibold text-white mb-2">{t('home.advanced_analytics')}</h3>
+               <p className="text-blue-100">{t('home.advanced_analytics_desc')}</p>
               </div>
             </div>
 
@@ -339,7 +341,7 @@ export function Home() {
               to="/features"
               className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold text-lg rounded-lg hover:bg-gray-50 transition-colors space-x-2"
             >
-              <span>View Pro Plans</span>
+              <span>{t('features.view_pro_plans')}</span>
               <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
@@ -351,10 +353,10 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Instant QR Code Generator
+              {t('home.qr_generator_title')}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Generate QR codes instantly for any URL. Perfect for print materials, presentations, and offline marketing.
+              {t('home.qr_generator_subtitle')}
             </p>
           </div>
 
@@ -363,18 +365,18 @@ export function Home() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div>
                   <label htmlFor="qr-url" className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
-                    Enter any URL to generate a QR code:
+                    {t('home.enter_url_qr')}
                   </label>
                   <input
                     type="url"
                     id="qr-url"
                     value={qrUrl}
                     onChange={(e) => setQrUrl(e.target.value)}
-                    placeholder="https://example.com"
+                    placeholder={t('shortener.url_placeholder')}
                     className="w-full px-4 py-3 text-lg border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
                   />
                   <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
-                    The QR code updates automatically as you type
+                    {t('home.qr_updates_automatically')}
                   </p>
                 </div>
                 
@@ -393,7 +395,7 @@ export function Home() {
                         <div className="text-center">
                           <QrCode className="h-12 w-12 text-gray-400 mx-auto mb-2" />
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            QR code will appear here
+                            {t('qr.will_appear_here')}
                           </p>
                         </div>
                       </div>
@@ -405,13 +407,13 @@ export function Home() {
               {qrUrl && (
                 <div className="mt-8 text-center">
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Want to save this QR code and track its performance?
+                    {t('home.save_qr_track')}
                   </p>
                   <Link
                     to="/login"
                     className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors space-x-2"
                   >
-                    <span>Create Free Account</span>
+                    <span>{t('hero.create_free_account')}</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>

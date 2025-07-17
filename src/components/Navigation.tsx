@@ -1,13 +1,16 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
+import { LanguageSwitcher } from './LanguageSwitcher'
 import { Moon, Sun, LogOut, User, Link as LinkIcon, Settings, Menu, X } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
 export function Navigation() {
   const { user, signOut } = useAuth()
   const { isDark, toggleTheme } = useTheme()
+  const { t } = useTranslation()
   const location = useLocation()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -34,11 +37,11 @@ export function Navigation() {
   }
 
   const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/features', label: 'Features' },
-    { path: '/about', label: 'About' },
-    { path: '/contact', label: 'Contact' },
-    ...(user ? [{ path: '/dashboard', label: 'Dashboard' }] : [])
+    { path: '/', label: t('nav.home') },
+    { path: '/features', label: t('nav.features') },
+    { path: '/about', label: t('nav.about') },
+    { path: '/contact', label: t('nav.contact') },
+    ...(user ? [{ path: '/dashboard', label: t('nav.dashboard') }] : [])
   ]
 
   return (
@@ -74,6 +77,11 @@ export function Navigation() {
 
           {/* Right side controls */}
           <div className="flex items-center space-x-4">
+            {/* Language Switcher */}
+            <div className="hidden sm:block">
+              <LanguageSwitcher />
+            </div>
+
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -119,7 +127,7 @@ export function Navigation() {
                       className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors"
                     >
                       <Settings className="h-4 w-4" />
-                      <span>Profile Settings</span>
+                      <span>{t('nav.profile_settings')}</span>
                     </Link>
                     <button
                       onClick={() => {
@@ -136,7 +144,7 @@ export function Navigation() {
                       className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors"
                     >
                       <LogOut className="h-4 w-4" />
-                      <span>Logout</span>
+                      <span>{t('nav.logout')}</span>
                     </button>
                   </div>
                 )}
@@ -146,7 +154,7 @@ export function Navigation() {
                 to="/login"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-medium transition-colors"
               >
-                Login
+                {t('nav.login')}
               </Link>
             )}
           </div>
@@ -157,6 +165,11 @@ export function Navigation() {
       {isMobileMenuOpen && (
         <div ref={mobileMenuRef} className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
           <div className="px-4 py-2 space-y-1">
+            {/* Mobile Language Switcher */}
+            <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-700 mb-2">
+              <LanguageSwitcher />
+            </div>
+            
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -177,7 +190,7 @@ export function Navigation() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block px-3 py-2 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-center"
               >
-                Login
+                {t('nav.login')}
               </Link>
             )}
           </div>
