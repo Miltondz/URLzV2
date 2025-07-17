@@ -58,7 +58,6 @@
     "no_links_description": "Crea tu primera URL acortada para comenzar.",
     "no_clicks_analyze": "¡Aún No Hay Clics para Analizar!",
     "no_clicks_description": "Comparte tu enlace corto para comenzar a recopilar insights sobre tu audiencia y su comportamiento.",
-    "most_active_links": "Enlaces Más Activos",
     "your_link": "Tu Enlace:",
     "real_time_tracking": "Seguimiento de clics en tiempo real",
     "geographic_insights": "Insights geográficos",
@@ -147,116 +146,9 @@
     },
     "ready_to_start": "¿Listo para Comenzar?",
     "ready_subtitle": "Únete a miles de usuarios que confían en urlz.lat para sus necesidades de gestión de enlaces. Comienza a acortar y rastrear tus URLs hoy.",
-    "subtitle": "Descubre todas las herramientas y capacidades que hacen de urlz.lat la elección perfecta para tus necesidades de gestión de enlaces.",
-    "smart_shortening": {
-      "title": "Acortamiento Inteligente de URLs",
-      "description": "Crea enlaces cortos y memorables al instante con nuestro algoritmo avanzado que genera códigos únicos."
-    },
-    "real_time_analytics": {
-      "title": "Analíticas en Tiempo Real",
-      "description": "Rastrea clics, analiza el comportamiento de la audiencia y obtén insights detallados con gráficos y mapas interactivos."
-    },
-    "custom_branded_links": {
-      "title": "Enlaces de Marca Personalizados",
-      "description": "Crea slugs personalizados que reflejen tu marca y hagan tus enlaces más memorables y confiables."
-    },
-    "url_safety": {
-      "title": "Verificación de Seguridad de URLs",
-      "description": "Verificación automática de seguridad de URLs usando la API de Google Safe Browsing para proteger a los usuarios de enlaces maliciosos."
-    },
-    "qr_generation": {
-      "title": "Generación de Códigos QR",
-      "description": "Genera automáticamente códigos QR para todos tus enlaces con capacidades de descarga y compartir."
-    },
-    "link_preview": {
-      "title": "Vista Previa de Enlaces",
-      "description": "Vista previa segura de URLs de destino antes de hacer clic, mostrando título de página, descripción y favicon."
-    },
-    "mobile_optimized": {
-      "title": "Optimizado para Móviles",
-      "description": "Diseño completamente responsivo que funciona perfectamente en todos los dispositivos, desde escritorio hasta móvil."
-    },
-    "link_management": {
-      "title": "Gestión de Enlaces",
-      "description": "Organiza, edita y gestiona todos tus enlaces desde un panel centralizado con búsqueda y paginación."
-    },
-    "ready_to_start": "¿Listo para Comenzar?",
-    "ready_subtitle": "Únete a miles de usuarios que confían en urlz.lat para sus necesidades de gestión de enlaces. Comienza a acortar y rastrear tus URLs hoy.",
     "view_pro_plans": "Ver Planes Pro"
   },
   "about": {
-    "title": "Acerca de urlz.lat",
-    "subtitle": "Estamos en una misión para hacer que compartir enlaces sea más inteligente, rápido y perspicaz para todos.",
-    "our_mission": "Nuestra Misión",
-    "mission_text": "En urlz.lat, creemos que cada enlace cuenta una historia. Nuestra plataforma empodera a individuos y empresas para crear conexiones significativas a través del acortamiento inteligente de URLs, analíticas comprehensivas y gestión de enlaces de marca. Estamos comprometidos a proporcionar herramientas que no solo acorten tus enlaces sino que también amplifiquen tu presencia digital.",
-    "meet_founder": "Conoce a Nuestro Fundador",
-    "founder_name": "Milton Diaz",
-    "founder_title": "en DunaTech, creador de Urlz.lat",
-    "founder_bio_1": "Con más de una década de experiencia en desarrollo de software e innovación digital, Milton aporta una perspectiva única a la gestión y analíticas de URLs. Su pasión por crear herramientas que simplifican procesos complejos llevó a la creación de urlz.lat.",
-    "founder_bio_2": "El trasfondo de Milton abarca desarrollo full-stack, gestión de productos y emprendimiento. Él cree en construir tecnología que empodere a los usuarios mientras mantiene los más altos estándares de privacidad y seguridad.",
-    "founder_quote": "Cada enlace cuenta una historia, y nuestra misión es ayudarte a contar la tuya mejor. No solo estamos acortando URLs – estamos creando conexiones que importan.",
-    "connect_linkedin": "Conectar en LinkedIn",
-    "get_in_touch": "Ponerse en Contacto",
-    "user_centric": "Centrado en el Usuario",
-    "user_centric_desc": "Cada característica que construimos está diseñada pensando en nuestros usuarios, asegurando simplicidad sin sacrificar poder.",
-    "excellence": "Excelencia",
-    "excellence_desc": "Nos esforzamos por la excelencia en todo lo que hacemos, desde la calidad de nuestro código hasta nuestro soporte al cliente.",
-    "community": "Comunidad",
-    "community_desc": "Estamos construyendo más que una herramienta – estamos fomentando una comunidad de creadores, mercadólogos e innovadores.",
-    "our_story": "Nuestra Historia",
-    "story_text_1": "Fundada en 2024, urlz.lat surgió de una observación simple: compartir enlaces se estaba volviendo cada vez más importante en nuestro mundo digital, pero las soluciones existentes eran demasiado complejas o demasiado limitadas.",
-    "story_text_2": "Nos propusimos crear una plataforma que combine la simplicidad de los acortadores de URL tradicionales con el poder de las herramientas modernas de analíticas y branding. Hoy, estamos orgullosos de servir a miles de usuarios que confían en nosotros con sus enlaces más importantes.",
-    "year_founded": "Año de Fundación"
-  },
-  "contact": {
-    "title": "Ponte en Contacto",
-    "subtitle": "¿Tienes preguntas, comentarios o necesitas soporte? Nos encantaría escucharte. Contáctanos y te responderemos lo antes posible.",
-    "contact_information": "Información de Contacto",
-    "email": "Correo Electrónico",
-    "phone": "Teléfono",
-    "office": "Oficina",
-    "response_time": "Tiempo de Respuesta",
-    "response_time_desc": "Típicamente respondemos dentro de 24 horas durante días laborables.",
-    "quick_help": "Ayuda Rápida",
-    "custom_slug_help": "¿Cómo creo un slug personalizado?",
-    "custom_slug_answer": "Los slugs personalizados están disponibles con nuestro plan Pro. Simplemente ingresa tu slug deseado al crear un enlace.",
-    "analytics_help": "¿Puedo rastrear las analíticas de mis enlaces?",
-    "analytics_answer": "¡Sí! Todos los usuarios obtienen acceso a analíticas básicas. Los usuarios Pro obtienen analíticas avanzadas con insights detallados.",
-    "api_help": "¿Hay una API disponible?",
-    "api_answer": "El acceso a la API está disponible para suscriptores del plan Business. Contáctanos para documentación.",
-    "send_message": "Envíanos un Mensaje",
-    "message_sent": "¡Mensaje enviado exitosamente!",
-    "message_sent_desc": "Te responderemos lo antes posible.",
-    "full_name": "Nombre Completo",
-    "email_address": "Dirección de Correo Electrónico",
-    "subject": "Asunto",
-    "select_subject": "Selecciona un asunto",
-    "general_inquiry": "Consulta General",
-    "technical_support": "Soporte Técnico",
-    "billing_question": "Pregunta de Facturación",
-    "feature_request": "Solicitud de Característica",
-    "bug_report": "Reporte de Error",
-    "partnership": "Asociación",
-    "message": "Mensaje",
-    "message_placeholder": "Cuéntanos cómo podemos ayudarte...",
-    "send_message_btn": "Enviar Mensaje",
-    "sending": "Enviando..."
-  },
-  "profile": {
-    "title": "Mi Perfil",
-    "subtitle": "Gestiona la configuración y preferencias de tu cuenta",
-    "account_settings": "Configuración de Cuenta",
-    "coming_soon": "Configuración de Perfil Próximamente",
-    "coming_soon_desc": "Estamos trabajando en traerte características comprehensivas de gestión de perfil. Mantente atento a las actualizaciones para personalizar la configuración de tu cuenta.",
-    "subscription": "Suscripción",
-    "current_plan": "Plan Actual",
-    "free": "Gratuito",
-    "upgrade_description": "Actualiza a Pro para slugs personalizados y analíticas avanzadas.",
-    "upgrade_to_pro": "Actualizar a Pro",
-    "security": "Seguridad",
-    "two_factor_auth": "Autenticación de Dos Factores",
-    "login_history": "Historial de Inicio de Sesión",
-    "coming_soon_short": "Próximamente"
     "title": "Acerca de urlz.lat",
     "subtitle": "Estamos en una misión para hacer que compartir enlaces sea más inteligente, rápido y perspicaz para todos.",
     "our_mission": "Nuestra Misión",
@@ -472,7 +364,6 @@
     "unauthorized": "No estás autorizado para realizar esta acción.",
     "not_found": "El recurso solicitado no fue encontrado.",
     "forbidden": "Acceso denegado.",
-    "not_found": "El recurso solicitado no fue encontrado.",
     "server_error": "Error del servidor. Por favor intenta de nuevo más tarde.",
     "validation": "Por favor verifica tu entrada e intenta de nuevo.",
     "required_field": "Este campo es requerido.",
