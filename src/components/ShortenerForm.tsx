@@ -105,7 +105,7 @@ export function ShortenerForm({ onSuccess, refetchStats }: ShortenerFormProps) {
       setLongUrl('')
       setCustomSlug('')
       setIsVerified(null)
-      onSuccess()
+      onSuccess(data)
       refetchStats() // Update stats after successful URL creation
     } catch (error) {
       console.error('Error shortening URL:', error)

@@ -113,9 +113,9 @@ export function Dashboard() {
     fetchAllData()
   }
 
-  // Add new link with fade-in animation
-  const handleNewLink = (newLink: any) => {
-    setAllLinks(prevLinks => [newLink, ...prevLinks])
+  // Handle new link creation
+  const handleNewLink = (newLinkData?: any) => {
+    // Always refetch all data to ensure stats are updated
     refetchData()
   }
 
